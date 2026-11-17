@@ -1,0 +1,2 @@
+<article class="product-card"><a class="product-image" href="/san-pham/@Item.Slug"><img src="@Item.Image" alt="@Item.Title — @Item.Brand" loading="lazy" /><span class="product-brand">@Item.Brand</span></a><div class="product-card-body"><span class="eyebrow">@Item.Category</span><h3><a href="/san-pham/@Item.Slug">@Item.Title</a></h3><p>@Item.Description</p><a class="text-link" href="/san-pham/@Item.Slug">Khám phá sản phẩm <Icon Name="arrow" /></a></div></article>
+@code { [Parameter, EditorRequired] public Product Item { get; set; } = default!; }

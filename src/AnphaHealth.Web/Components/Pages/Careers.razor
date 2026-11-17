@@ -1,0 +1,5 @@
+@page "/tuyen-dung"
+<PageTitle>Tuyển dụng — Anpha Health</PageTitle>
+<PageHero Eyebrow="Tuyển dụng" Title="Cùng phát triển với Anpha." Description="Trung thực · Độc lập · Uy tín · Học hỏi · Sáng tạo" />
+<section class="section"><div class="container detail-layout"><aside><h3>Cơ hội nghề nghiệp</h3><div class="category-list">@foreach (var t in tabs) { <button class="@(tab == t ? "selected" : "")" @onclick="() => tab = t">@t <Icon Name="arrow" /></button> }</div></aside><div class="empty-state"><Icon Name="cross" /><span class="eyebrow">GIA NHẬP ANPHA</span><h2>@tab</h2><p>Website hiện tại đang cập nhật nội dung này.<br />Vui lòng liên hệ Anpha để tìm hiểu thêm về cơ hội hợp tác.</p><a href="mailto:lienhe@anphahealth.com" class="button button-navy">Liên hệ qua email <Icon Name="mail" /></a></div></div></section>
+@code { string[] tabs = ["Tin tuyển dụng", "Chính sách công ty", "Ứng tuyển"]; string tab = "Tin tuyển dụng"; }

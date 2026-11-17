@@ -1,0 +1,8 @@
+@page "/noi-dung/{**Slug}"
+@inject ContentStore Store
+@if (Store.Get(Slug ?? "home") is { } contentPage)
+{
+    <PageTitle>@contentPage.Title — Anpha Health</PageTitle><PageHero Eyebrow="Nội dung website hiện tại" Title="@contentPage.Title" />
+    <section class="section"><div class="container article-layout"><article><div class="prose source-content">@((MarkupString)contentPage.Html)</div><p class="source-note">Nội dung lưu từ <a href="@contentPage.Url" target="_blank" rel="noopener">website Anpha Health</a>. Trang thuộc bản lưu nội dung; các trang chính có thiết kế riêng trong menu.</p></article><aside class="help-card"><h3>Khám phá Anpha Health</h3><p>Danh mục sản phẩm, thông tin công ty và liên hệ.</p><a href="@(Store.Route(contentPage.Slug).StartsWith("/noi-dung") ? "/" : Store.Route(contentPage.Slug))" class="button button-white">@(Store.Route(contentPage.Slug).StartsWith("/noi-dung") ? "Trang chủ" : "Xem giao diện mới") <Icon Name="arrow" /></a></aside></div></section>
+} else { <PageHero Title="Nội dung chưa có trong bản lưu" /><section class="section"><div class="container"><p>Liên kết này chưa có dữ liệu khả dụng từ website gốc.</p><a class="button button-navy" href="/">Về trang chủ <Icon Name="arrow" /></a></div></section> }
+@code { [Parameter] public string? Slug { get; set; } }

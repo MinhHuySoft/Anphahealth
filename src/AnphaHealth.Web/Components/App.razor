@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <ResourcePreloader />
+    <meta name="description" content="An Pha Health — Nhập khẩu và phân phối máy móc, vật tư, thiết bị y tế. Đồng hành cùng y khoa từ năm 2009." />
+    <link rel="stylesheet" href="@Assets["fonts/fonts.css"]" />
+    <link rel="stylesheet" href="@Assets["site.css"]" />
+    <link rel="stylesheet" href="@Assets["AnphaHealth.Web.styles.css"]" />
+    <ImportMap />
+    <link rel="icon" type="image/png" href="/media/29276710c566-logo-120px.png" />
+    <HeadOutlet @rendermode="InteractiveServer" />
+</head>
+
+<body>
+    <Routes @rendermode="InteractiveServer" />
+    <ReconnectModal />
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
+</body>
+
+</html>

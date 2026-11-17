@@ -1,0 +1,17 @@
+@page "/san-pham/{Slug}"
+@inject ContentStore Store
+@if (Item is { } product && Content is { } content)
+{
+    <PageTitle>@product.Title — Anpha Health</PageTitle>
+    <PageHero Eyebrow="Sản phẩm" Title="@product.Title" Description="@product.Brand" />
+    <section class="section"><div class="container detail-layout"><aside><h3>Lĩnh vực chuyên môn</h3><div class="category-list">@foreach (var p in Store.Products.Where(x => x.Primary)) { <a href="/san-pham/@p.Slug" class="@(p.Category == product.Category ? "selected" : "")">@p.Category <Icon Name="arrow" /></a> }</div><div class="help-card"><Icon Name="phone" /><h3>Kết nối để được tư vấn</h3><p>Thông tin danh mục và giải pháp dành cho đối tác y khoa.</p><a class="button button-white" href="/lien-he?sanpham=@product.Slug">Yêu cầu thông tin <Icon Name="arrow" /></a></div></aside><article><div class="product-intro"><div class="product-detail-image"><img src="@product.Image" alt="@product.Title" /></div><div><span class="eyebrow">@product.Category</span><h2>@product.Title</h2><p class="lead">@product.Description</p><dl class="product-facts"><div><dt>Thương hiệu</dt><dd>@product.Brand</dd></div><div><dt>Đơn vị phân phối</dt><dd>Anpha Health</dd></div></dl><a class="button button-navy" href="/lien-he?sanpham=@product.Slug">Liên hệ tư vấn <Icon Name="arrow" /></a></div></div><div class="content-tabs" role="tablist" aria-label="Thông tin sản phẩm"><button role="tab" aria-selected="@(!images)" class="@(!images ? "active" : "")" @onclick="() => images = false">Thông tin chi tiết</button><button role="tab" aria-selected="@images" class="@(images ? "active" : "")" @onclick="() => images = true">Hình ảnh sản phẩm</button></div>@if (images) { <div class="image-gallery">@foreach (var image in RelevantImages(content)) { <a href="@image" target="_blank" rel="noopener"><img src="@image" alt="Hình ảnh @product.Title" loading="lazy" /></a> }</div> } else { <div class="prose source-content">@((MarkupString)content.Html)</div> }<p class="source-note">Nội dung được chuyển từ website Anpha Health hiện tại.</p>@if (product.Category == "Cấy ghép ngực") { <h2 class="related-title">Các dòng sản phẩm Nagor</h2><div class="related-products">@foreach (var related in Store.Products.Where(x => !x.Primary && x.Slug != Slug)) { <ProductCard Item="related" /> }</div> }</article></div></section>
+}
+else { <PageHero Title="Không tìm thấy sản phẩm" /><div class="container section"><a class="button button-navy" href="/san-pham">Trở về danh mục</a></div> }
+@code {
+    [Parameter] public string Slug { get; set; } = "";
+    Product? Item => Store.Products.FirstOrDefault(x => x.Slug == Slug);
+    ContentPage? Content => Store.Get(Slug);
+    bool images;
+    protected override void OnParametersSet() => images = false;
+    IEnumerable<string> RelevantImages(ContentPage c) => c.LocalImages.Where(x => !x.Contains("chantrang") && !x.Contains("logo-120") && !x.Contains("shutterstock"));
+}

@@ -1,0 +1,11 @@
+@page "/san-pham"
+@inject ContentStore Store
+<PageTitle>Sản phẩm & thiết bị y tế — Anpha Health</PageTitle>
+<PageHero Eyebrow="Sản phẩm" Title="Giải pháp y khoa chuyên biệt." Description="Khám phá thiết bị, vật tư y tế theo lĩnh vực và thương hiệu." />
+<section class="section"><div class="container catalog-layout"><aside class="catalog-sidebar"><span class="eyebrow">DANH MỤC SẢN PHẨM</span><h2>Lĩnh vực</h2><div class="category-list"><button class="@(category == "Tất cả" ? "selected" : "")" @onclick='() => category = "Tất cả"'>Tất cả sản phẩm <span>8</span></button>@foreach (var c in Categories) { <button class="@(category == c ? "selected" : "")" @onclick="() => category = c">@c <Icon Name="arrow" /></button> }</div><div class="help-card"><Icon Name="phone" /><h3>Cần thông tin sản phẩm?</h3><p>Kết nối với Anpha để được tư vấn danh mục phù hợp.</p><a href="/lien-he" class="button button-white">Liên hệ Anpha <Icon Name="arrow" /></a></div></aside><div class="catalog-main"><div class="catalog-toolbar"><span><strong>@Filtered.Count()</strong> kết quả trong danh mục</span><label class="search-field"><Icon Name="search" /><input aria-label="Tìm sản phẩm" placeholder="Tìm tên, thương hiệu..." @bind="query" @bind:event="oninput" /></label></div><div class="catalog-products">@foreach (var p in Filtered) { <ProductCard Item="p" /> }</div>@if (!Filtered.Any()) { <div class="empty-state"><Icon Name="search" /><h2>Chưa tìm thấy sản phẩm</h2><p>Thử từ khóa khác hoặc xem lại toàn bộ danh mục.</p><button class="button button-navy" @onclick="Reset">Xem tất cả sản phẩm</button></div> }</div></div></section>
+@code {
+    string category = "Tất cả", query = "";
+    IEnumerable<string> Categories => Store.Products.Select(x => x.Category).Distinct();
+    IEnumerable<Product> Filtered => Store.Products.Where(x => (category == "Tất cả" || x.Category == category) && ($"{x.Title} {x.Brand} {x.Description}".Contains(query, StringComparison.CurrentCultureIgnoreCase)));
+    void Reset() { category = "Tất cả"; query = ""; }
+}

@@ -1,0 +1,764 @@
+[
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2015/10/bg4.jpg",
+    "local": "/media/23726ec98a96-bg4.jpg",
+    "bytes": 284257,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2015/10/chilifavicon.ico",
+    "local": "/media/a6f989766b1b-chilifavicon.ico",
+    "bytes": 1150,
+    "type": "image/vnd.microsoft.icon"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2015/10/png",
+    "local": "/media/e5f7dfa5c694-png",
+    "bytes": 7995,
+    "type": "application/octet-stream"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2015/12/banne-trangcon.png",
+    "local": "/media/75121befb0c8-banne-trangcon.png",
+    "bytes": 591345,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/04/724.gif",
+    "local": "/media/8ad393c45879-724.gif",
+    "bytes": 12864,
+    "type": "image/gif"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/123-e1474263579727.jpg",
+    "local": "/media/31bb32d8ef1f-123-e1474263579727.jpg",
+    "bytes": 101030,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/6033_196904493797345_874716314_n.png",
+    "local": "/media/5ae801c7ac78-6033_196904493797345_874716314_n.png",
+    "bytes": 11479,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/AAEAAQAAAAAAAABuAAAAJDIyNmRhNWQ0LTUxYmUtNDAzZS1hZGE5LWYwNTg0NDA4MTg1MQ.jpg",
+    "local": "/media/4a01ecf215e4-AAEAAQAAAAAAAABuAAAAJDIyNmRhNWQ0LTUxYmUtNDAzZS1hZGE5LWYwNTg0NDA4MTg1MQ.jpg",
+    "bytes": 114006,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Alvimedica-Logo_PMS165.png",
+    "local": "/media/02e0561c983c-Alvimedica-Logo_PMS165.png",
+    "bytes": 23665,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Banner-CID-1.jpg",
+    "local": "/media/654b9babd37c-Banner-CID-1.jpg",
+    "bytes": 110540,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Captur1e.jpg",
+    "local": "/media/c4db1bba0e8d-Captur1e.jpg",
+    "bytes": 30772,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Capture-e1474259277256.jpg",
+    "local": "/media/aef743ca4c8c-Capture-e1474259277256.jpg",
+    "bytes": 8410,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/GFX_nagor.jpg",
+    "local": "/media/24d5b8cfa970-GFX_nagor.jpg",
+    "bytes": 12536,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/GFX_nagor1.jpg",
+    "local": "/media/489a16bb3847-GFX_nagor1.jpg",
+    "bytes": 12536,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Logo-CID-VYGIA.png",
+    "local": "/media/62cdb85665c0-Logo-CID-VYGIA.png",
+    "bytes": 98114,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Medtronic_Logo.svg_.png",
+    "local": "/media/7a841ea4e654-Medtronic_Logo.svg_.png",
+    "bytes": 8414,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/NAGOR_CMYK.png",
+    "local": "/media/9cbd07b25003-NAGOR_CMYK.png",
+    "bytes": 5544,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Nen1.jpg",
+    "local": "/media/fb4d0085bd6d-Nen1.jpg",
+    "bytes": 2171778,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture1.jpg",
+    "local": "/media/eea971bcbff5-Picture1.jpg",
+    "bytes": 4735,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture11.jpg",
+    "local": "/media/4214d5fa967a-Picture11.jpg",
+    "bytes": 16365,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture12.jpg",
+    "local": "/media/cedef1fb21f8-Picture12.jpg",
+    "bytes": 65341,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture13.jpg",
+    "local": "/media/823b0d5f0845-Picture13.jpg",
+    "bytes": 85957,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture15.jpg",
+    "local": "/media/85e28be73954-Picture15.jpg",
+    "bytes": 56646,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture16.jpg",
+    "local": "/media/65996acaddfb-Picture16.jpg",
+    "bytes": 70303,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture17.jpg",
+    "local": "/media/d19b1c08158e-Picture17.jpg",
+    "bytes": 48140,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture18.jpg",
+    "local": "/media/56632ed5fe54-Picture18.jpg",
+    "bytes": 60133,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture19.jpg",
+    "local": "/media/b7c1b4f4dd4e-Picture19.jpg",
+    "bytes": 58975,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture20.jpg",
+    "local": "/media/90ec5672a731-Picture20.jpg",
+    "bytes": 62624,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture21.jpg",
+    "local": "/media/d66c567984ac-Picture21.jpg",
+    "bytes": 49224,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture22.jpg",
+    "local": "/media/7402d8e22eb5-Picture22.jpg",
+    "bytes": 62360,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture23.jpg",
+    "local": "/media/b4238e219d55-Picture23.jpg",
+    "bytes": 46111,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture24.jpg",
+    "local": "/media/964fccc72834-Picture24.jpg",
+    "bytes": 48615,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture25.jpg",
+    "local": "/media/daac8102a413-Picture25.jpg",
+    "bytes": 46864,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture26.jpg",
+    "local": "/media/6fa5c18ab019-Picture26.jpg",
+    "bytes": 6130,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture5.jpg",
+    "local": "/media/c4e41ab814e7-Picture5.jpg",
+    "bytes": 70922,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture7.jpg",
+    "local": "/media/f589c877548f-Picture7.jpg",
+    "bytes": 10758,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture8.jpg",
+    "local": "/media/e4d12aa20d0b-Picture8.jpg",
+    "bytes": 77385,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Picture9.jpg",
+    "local": "/media/4bf489f0fcdf-Picture9.jpg",
+    "bytes": 86116,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/RGI_nagor.jpg",
+    "local": "/media/353b08846c08-RGI_nagor.jpg",
+    "bytes": 14743,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/RGI_nagor1.jpg",
+    "local": "/media/c9a430cd2dce-RGI_nagor1.jpg",
+    "bytes": 14743,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Slider1.jpg",
+    "local": "/media/d847dfb84fdb-Slider1.jpg",
+    "bytes": 99657,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Slider2.jpg",
+    "local": "/media/7317b71c403b-Slider2.jpg",
+    "bytes": 59814,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Slider3.jpg",
+    "local": "/media/a4beb3dd0264-Slider3.jpg",
+    "bytes": 81145,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/Untitled.png",
+    "local": "/media/e796f1254c8f-Untitled.png",
+    "bytes": 473629,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/back4.png",
+    "local": "/media/a1be0b14d12a-back4.png",
+    "bytes": 299272,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/baner4.png",
+    "local": "/media/1e88df87ba65-baner4.png",
+    "bytes": 561783,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/banner-943866.jpg",
+    "local": "/media/c1987efd3172-banner-943866.jpg",
+    "bytes": 207082,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/banner-fmc1.jpg",
+    "local": "/media/68fb14f2a23c-banner-fmc1.jpg",
+    "bytes": 180694,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/banner-gt.png",
+    "local": "/media/853eb227b77b-banner-gt.png",
+    "bytes": 306394,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/banner-medtronic.jpg",
+    "local": "/media/a0358aec3d42-banner-medtronic.jpg",
+    "bytes": 115687,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/banner-nago1r.jpg",
+    "local": "/media/e660fbf3c7b4-banner-nago1r.jpg",
+    "bytes": 123533,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/banner.png",
+    "local": "/media/be3ee06c2a01-banner.png",
+    "bytes": 189149,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/bigstock-Medicine-Doctor-Hand-Working-W-44541469_opt.jpg",
+    "local": "/media/826f6f4bd5bd-bigstock-Medicine-Doctor-Hand-Working-W-44541469_opt.jpg",
+    "bytes": 277647,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/chantrang-loho.png",
+    "local": "/media/babf522efad4-chantrang-loho.png",
+    "bytes": 9443,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/cogel_Nagor.jpg",
+    "local": "/media/c0a70467ee8b-cogel_Nagor.jpg",
+    "bytes": 11779,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/cogel_Nagor1.jpg",
+    "local": "/media/ffe4c32f192f-cogel_Nagor1.jpg",
+    "bytes": 11779,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/fresenius-medical-care-logo-1000x226.png",
+    "local": "/media/40aa5bb70cf0-fresenius-medical-care-logo-1000x226.png",
+    "bytes": 47289,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/fresenius-medical-care-logo-wallpaper.png",
+    "local": "/media/bb6832e15219-fresenius-medical-care-logo-wallpaper.png",
+    "bytes": 261027,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/fresenius-medical-care-logo-wallpaper1.png",
+    "local": "/media/8e4fd766c3cd-fresenius-medical-care-logo-wallpaper1.png",
+    "bytes": 26801,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/fresenius-medical-care-logo.png",
+    "local": "/media/54ea604213f2-fresenius-medical-care-logo.png",
+    "bytes": 48836,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/hhhhh.png",
+    "local": "/media/4c8c27eadad4-hhhhh.png",
+    "bytes": 294248,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/hinh-baigioithieu.png",
+    "local": "/media/4e2374a9f764-hinh-baigioithieu.png",
+    "bytes": 465943,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/hinhsp-CID.jpg",
+    "local": "/media/f3cf2587984c-hinhsp-CID.jpg",
+    "bytes": 19448,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/hinhsp-FCM.jpg",
+    "local": "/media/f0711a265c12-hinhsp-FCM.jpg",
+    "bytes": 25923,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/hinhsp-medtronic.jpg",
+    "local": "/media/098042d53fce-hinhsp-medtronic.jpg",
+    "bytes": 21808,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/hinhsp-nagor.png",
+    "local": "/media/d880f5465a33-hinhsp-nagor.png",
+    "bytes": 189880,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image1-dd.jpg",
+    "local": "/media/baf348074ea0-image1-dd.jpg",
+    "bytes": 36772,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image1-dd1.jpg",
+    "local": "/media/f91101aad5a6-image1-dd1.jpg",
+    "bytes": 9270,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image1-dd2.jpg",
+    "local": "/media/14844103abdf-image1-dd2.jpg",
+    "bytes": 14118,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image1.jpg",
+    "local": "/media/031c09edb3e6-image1.jpg",
+    "bytes": 34172,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image10.jpg",
+    "local": "/media/334fa8699aed-image10.jpg",
+    "bytes": 7590,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image11.jpg",
+    "local": "/media/f22d532e91f2-image11.jpg",
+    "bytes": 24590,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image111.jpg",
+    "local": "/media/ca546d1db017-image111.jpg",
+    "bytes": 9284,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image112.jpg",
+    "local": "/media/efc1c7791884-image112.jpg",
+    "bytes": 7873,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image12.jpg",
+    "local": "/media/33f468aee305-image12.jpg",
+    "bytes": 32215,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image121.jpg",
+    "local": "/media/9f9888a825c9-image121.jpg",
+    "bytes": 34256,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image13.jpg",
+    "local": "/media/50ad8b577a56-image13.jpg",
+    "bytes": 41806,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image14.jpg",
+    "local": "/media/58251386d878-image14.jpg",
+    "bytes": 12107,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image15.jpg",
+    "local": "/media/b375e03894d9-image15.jpg",
+    "bytes": 33289,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image16.jpg",
+    "local": "/media/d3315342124e-image16.jpg",
+    "bytes": 39723,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image17.jpg",
+    "local": "/media/eaff95d1e535-image17.jpg",
+    "bytes": 35269,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image18.jpg",
+    "local": "/media/fb1d6645e42f-image18.jpg",
+    "bytes": 23220,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image19.jpg",
+    "local": "/media/424aea8c00f8-image19.jpg",
+    "bytes": 25008,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image2.jpg",
+    "local": "/media/c21d7119996b-image2.jpg",
+    "bytes": 15937,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image21.jpg",
+    "local": "/media/0c05390e7256-image21.jpg",
+    "bytes": 34717,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image22.jpg",
+    "local": "/media/aa8a8cb60053-image22.jpg",
+    "bytes": 23041,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image3.jpg",
+    "local": "/media/4d249552e170-image3.jpg",
+    "bytes": 73346,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image31.jpg",
+    "local": "/media/9613af25cb27-image31.jpg",
+    "bytes": 61994,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image32.jpg",
+    "local": "/media/8e4bedd6b0ba-image32.jpg",
+    "bytes": 25830,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image4.jpg",
+    "local": "/media/86b75be611d1-image4.jpg",
+    "bytes": 44171,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image41.jpg",
+    "local": "/media/9bec8244863f-image41.jpg",
+    "bytes": 48858,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image42.jpg",
+    "local": "/media/7c048e82c5d3-image42.jpg",
+    "bytes": 11180,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image5.jpg",
+    "local": "/media/80f1cef01281-image5.jpg",
+    "bytes": 19707,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image51.jpg",
+    "local": "/media/95b3c55fddfb-image51.jpg",
+    "bytes": 13351,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image52.jpg",
+    "local": "/media/5040c5b0064a-image52.jpg",
+    "bytes": 29591,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image6.jpg",
+    "local": "/media/9fdf358588ae-image6.jpg",
+    "bytes": 52209,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image61.jpg",
+    "local": "/media/5e736beb35a6-image61.jpg",
+    "bytes": 10810,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image7.jpg",
+    "local": "/media/dd863f1b29d5-image7.jpg",
+    "bytes": 31498,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image71.jpg",
+    "local": "/media/0153ed604f14-image71.jpg",
+    "bytes": 7639,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image8.jpg",
+    "local": "/media/ed4db41baf3f-image8.jpg",
+    "bytes": 37662,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image81.jpg",
+    "local": "/media/79ca2f647c47-image81.jpg",
+    "bytes": 7590,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/image9.jpg",
+    "local": "/media/bd36e2993430-image9.jpg",
+    "bytes": 7639,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/impleo_impleo.jpg",
+    "local": "/media/a309d6d976cd-impleo_impleo.jpg",
+    "bytes": 11499,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/logo-120px.png",
+    "local": "/media/29276710c566-logo-120px.png",
+    "bytes": 10699,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/logo-new-1.png",
+    "local": "/media/426224230ad3-logo-new-1.png",
+    "bytes": 8245,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/logo-web.png",
+    "local": "/media/189b0cf00e0a-logo-web.png",
+    "bytes": 13392,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/logo.jpg",
+    "local": "/media/aafcd343bd20-logo.jpg",
+    "bytes": 230583,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/logo_anpha.png",
+    "local": "/media/cc3b66831903-logo_anpha.png",
+    "bytes": 21517,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/logo_anpha1.png",
+    "local": "/media/54ae77c2ff17-logo_anpha1.png",
+    "bytes": 19844,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/medical-background-1024x254.png",
+    "local": "/media/6989f87bf130-medical-background-1024x254.png",
+    "bytes": 198206,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/shutterstock_70352440.jpg",
+    "local": "/media/de1126b8b2b8-shutterstock_70352440.jpg",
+    "bytes": 96082,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/09/sub-contact-bg.jpg",
+    "local": "/media/6f1737a71504-sub-contact-bg.jpg",
+    "bytes": 134335,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/10/Capture.png",
+    "local": "/media/770f8aa3ac01-Capture.png",
+    "bytes": 75935,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/10/Túi-dạng-gel-bị-cắt-đôi-vẫn-không-rò-rỉ-silicone.jpg",
+    "local": "/media/170116d5e4ab-T-i-d-ng-gel-b--c-t---i-v-n-kh-ng-r--r--silicone.jpg",
+    "bytes": 55314,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/10/WOMANAPPLE-G-1000x923.jpg",
+    "local": "/media/68fbccd6a6ff-WOMANAPPLE-G-1000x923.jpg",
+    "bytes": 40680,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/10/WOMANAPPLE-G-480x480.jpg",
+    "local": "/media/041e86951b64-WOMANAPPLE-G-480x480.jpg",
+    "bytes": 14108,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/10/WOMANAPPLE-G.jpg",
+    "local": "/media/99f58b22a816-WOMANAPPLE-G.jpg",
+    "bytes": 198216,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/10/images.jpg",
+    "local": "/media/c3bea0bebf2a-images.jpg",
+    "bytes": 4299,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/10/tui-nguc-1_UPFT.jpg",
+    "local": "/media/8798a8e555a2-tui-nguc-1_UPFT.jpg",
+    "bytes": 115199,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/10/tải-xuống-1.jpg",
+    "local": "/media/1875d6f9826c-t-i-xu-ng-1.jpg",
+    "bytes": 1803,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2016/10/tải-xuống.jpg",
+    "local": "/media/00b2824b08b4-t-i-xu-ng.jpg",
+    "bytes": 1260,
+    "type": "image/jpeg"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2023/11/Picture2.png",
+    "local": "/media/28cd5abebde3-Picture2.png",
+    "bytes": 753307,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2023/11/Picture3.png",
+    "local": "/media/0f0e2efa2983-Picture3.png",
+    "bytes": 13159,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2023/11/Picture4.png",
+    "local": "/media/b89dcdf5269c-Picture4.png",
+    "bytes": 70604,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2023/11/Picture5.png",
+    "local": "/media/f1f31ed01eaf-Picture5.png",
+    "bytes": 56511,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2023/11/Picture6.png",
+    "local": "/media/89e2ee562333-Picture6.png",
+    "bytes": 2029603,
+    "type": "image/png"
+  },
+  {
+    "url": "https://anphahealth.vn/wp-content/uploads/2023/11/Picture8.jpg",
+    "local": "/media/74debf12cd15-Picture8.jpg",
+    "bytes": 39933,
+    "type": "image/jpeg"
+  }
+]
