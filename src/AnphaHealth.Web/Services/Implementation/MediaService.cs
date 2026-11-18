@@ -48,7 +48,7 @@ internal sealed class MediaService(IRepository<MediaAsset> repository, IWebHostE
         var alt = ValidateAltText(altText ?? "");
         var header = new byte[12];
         var count = await stream.ReadAtLeastAsync(header, header.Length, false, cancellationToken);
-        var (extension, mime) = DetectImage(header.AsSpan(0, count));
+        var (extension, mime) = DetectMedia(header.AsSpan(0, count));
         var safeName = Guid.NewGuid().ToString("N") + extension;
         var directory = UploadDirectory(environment, configuration);
         Directory.CreateDirectory(directory);
@@ -120,8 +120,10 @@ internal sealed class MediaService(IRepository<MediaAsset> repository, IWebHostE
         return value.Trim();
     }
 
-    private static (string Extension, string ContentType) DetectImage(ReadOnlySpan<byte> header)
+    private static (string Extension, string ContentType) DetectMedia(ReadOnlySpan<byte> header)
     {
+        if (header.StartsWith("%PDF-"u8))
+            return (".pdf", "application/pdf");
         if (header.StartsWith(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }))
             return (".png", "image/png");
         if (header.StartsWith(new byte[] { 255, 216, 255 }))
@@ -130,6 +132,6 @@ internal sealed class MediaService(IRepository<MediaAsset> repository, IWebHostE
             return (".gif", "image/gif");
         if (header.Length >= 12 && header.StartsWith("RIFF"u8) && header[8..12].SequenceEqual("WEBP"u8))
             return (".webp", "image/webp");
-        throw new CmsException("Chỉ chấp nhận ảnh PNG, JPEG, GIF và WebP.");
+        throw new CmsException("Chỉ chấp nhận PDF và ảnh PNG, JPEG, GIF hoặc WebP.");
     }
 }

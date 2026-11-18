@@ -80,7 +80,13 @@ app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(uploadRoot),
     RequestPath = "/media/uploads",
-    OnPrepareResponse = context => context.Context.Response.Headers["X-Content-Type-Options"] = "nosniff"
+    OnPrepareResponse = context =>
+    {
+        var headers = context.Context.Response.Headers;
+        headers["X-Content-Type-Options"] = "nosniff";
+        if (Path.GetExtension(context.File.Name).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
+            headers["Content-Disposition"] = "attachment";
+    }
 });
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,0 +1,118 @@
+@page "/huong-dan-su-dung"
+@using System.Globalization
+@inject IPublicWebsiteService Website
+@inject NavigationManager Navigation
+
+<PageTitle>Hướng dẫn sử dụng — Anpha Health</PageTitle>
+<PageHero Eyebrow="Tài liệu sản phẩm" Title="Hướng dẫn sử dụng"
+          Description="Tra cứu theo tên sản phẩm, mã model hoặc thương hiệu." />
+
+<section class="section">
+    <div class="container guide-library">
+        <div class="guide-search">
+            <label>
+                <span>Tên, mã sản phẩm hoặc thương hiệu</span>
+                <input type="search" maxlength="120" @bind="query" @bind:event="oninput"
+                       placeholder="Ví dụ: 5008S, Cre8, IMPLEO" aria-controls="guide-results" />
+            </label>
+            <label>
+                <span>Thương hiệu</span>
+                <select @bind="brand" aria-controls="guide-results">
+                    <option value="">Tất cả thương hiệu</option>
+                    @foreach (var item in brands)
+                    {
+                        <option value="@item">@item</option>
+                    }
+                </select>
+            </label>
+        </div>
+
+        @if (productFilter is not null)
+        {
+            <p class="guide-filter">Sản phẩm: <strong>@productFilter</strong>
+                <a href="/huong-dan-su-dung">Xem tất cả sản phẩm</a>
+            </p>
+        }
+
+        @if (guides is null)
+        {
+            <p role="status">Đang tải tài liệu…</p>
+        }
+        else
+        {
+            var results = guides.Where(Matches).ToList();
+            <p class="guide-count" role="status"><strong>@results.Count</strong> tài liệu</p>
+            <div class="guide-results" id="guide-results">
+                @foreach (var guide in results)
+                {
+                    <article class="guide-item" @key="guide.Slug">
+                        <div>
+                            <div class="guide-meta"><span class="guide-model">@guide.Model</span><span>@guide.Brand</span></div>
+                            <h2><a href="@Website.Route(guide.Slug, "Guide")">@guide.Title</a></h2>
+                            <p>@guide.Summary</p>
+                        </div>
+                        <div class="guide-actions">
+                            @if (guide.IsSample)
+                            {
+                                <span class="guide-sample">Nội dung mẫu</span>
+                            }
+                            <a class="text-link" href="@Website.Route(guide.Slug, "Guide")">Xem nội dung <Icon Name="arrow" /></a>
+                            @if (guide.FilePath is { } file)
+                            {
+                                <a class="text-link" href="@file" download>Tải xuống PDF</a>
+                            }
+                        </div>
+                    </article>
+                }
+                @if (results.Count == 0)
+                {
+                    <div class="guide-empty">
+                        <h2>Chưa tìm thấy tài liệu</h2>
+                        <p>Thử tên ngắn hơn, kiểm tra lại mã model hoặc bỏ bộ lọc thương hiệu.</p>
+                        <button type="button" class="button button-navy" @onclick="Reset">Xóa bộ lọc</button>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    [SupplyParameterFromQuery(Name = "sanpham")] public string? ProductSlug { get; set; }
+    private static readonly CompareInfo Vietnamese = CultureInfo.GetCultureInfo("vi-VN").CompareInfo;
+    private const CompareOptions SearchOptions = CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace;
+    private IReadOnlyList<PublicGuide>? guides;
+    private IEnumerable<string> brands => guides is null ? [] : guides.Select(item => item.Brand).Distinct().Order();
+    private string? productFilter => string.IsNullOrWhiteSpace(ProductSlug) ? null :
+        guides?.FirstOrDefault(item => item.ProductSlug.Equals(ProductSlug, StringComparison.OrdinalIgnoreCase))?.ProductName ?? ProductSlug;
+    private string query = "";
+    private string brand = "";
+
+    protected override async Task OnInitializedAsync() => guides = await Website.ListGuidesAsync();
+
+    private bool Matches(PublicGuide guide)
+    {
+        if (brand.Length > 0 && guide.Brand != brand)
+            return false;
+        if (productFilter is not null && !guide.ProductSlug.Equals(ProductSlug, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var text = $"{guide.Title} {guide.ProductName} {guide.Brand} {guide.Category} {guide.Model}";
+        var compactModel = new string(guide.Model.Where(char.IsLetterOrDigit).ToArray());
+        var compactQuery = new string(query.Where(char.IsLetterOrDigit).ToArray());
+        if (compactQuery.Length > 0 && compactModel.Contains(compactQuery, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return query.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .All(term => Vietnamese.IndexOf(text.Replace('đ', 'd').Replace('Đ', 'D'),
+                term.Replace('đ', 'd').Replace('Đ', 'D'), SearchOptions) >= 0);
+    }
+
+    private void Reset()
+    {
+        query = "";
+        brand = "";
+        if (productFilter is not null)
+            Navigation.NavigateTo("/huong-dan-su-dung");
+    }
+}

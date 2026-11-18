@@ -167,5 +167,18 @@ BEGIN
     );
 END;
 
+
+IF COL_LENGTH(N'dbo.ContentPages', N'GuideProductId') IS NULL
+BEGIN
+    ALTER TABLE dbo.ContentPages ADD
+        GuideProductId int NULL CONSTRAINT FK_ContentPages_GuideProduct REFERENCES dbo.Products(Id),
+        GuideModel nvarchar(120) NULL,
+        GuideFileId int NULL CONSTRAINT FK_ContentPages_GuideFile REFERENCES dbo.MediaAssets(Id),
+        IsGuideSample bit NOT NULL CONSTRAINT DF_ContentPages_IsGuideSample DEFAULT (0);
+    ALTER TABLE dbo.ContentPages DROP CONSTRAINT CK_ContentPages_ContentKind;
+    ALTER TABLE dbo.ContentPages ADD CONSTRAINT CK_ContentPages_ContentKind
+        CHECK (ContentKind IN (N'Article', N'Page', N'Product', N'Archive', N'Guide'));
+END;
+
 COMMIT TRANSACTION;
 GO

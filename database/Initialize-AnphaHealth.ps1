@@ -167,6 +167,8 @@ IF @LockResult < 0
         $seedCommand.Parameters.Add('@CatalogJson', [System.Data.SqlDbType]::NVarChar, -1).Value =
             ConvertTo-Json -InputObject $catalog -Depth 16 -Compress
         [void]$seedCommand.ExecuteNonQuery()
+        $seedCommand.CommandText = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'seed-guides.sql') -Raw -Encoding utf8
+        [void]$seedCommand.ExecuteNonQuery()
         $seedCommand.Dispose()
 
         $snapshotCommand = $connection.CreateCommand()

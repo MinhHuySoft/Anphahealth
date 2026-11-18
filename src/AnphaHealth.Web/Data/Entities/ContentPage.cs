@@ -35,9 +35,21 @@ public partial class ContentPage
 
     public string? SourceMetadata { get; set; }
 
+    public int? GuideProductId { get; set; }
+
+    public string? GuideModel { get; set; }
+
+    public int? GuideFileId { get; set; }
+
+    public bool IsGuideSample { get; set; }
+
     public virtual ICollection<ContentPageMedium> ContentPageMedia { get; set; } = new List<ContentPageMedium>();
 
     public virtual MediaAsset? FeaturedImage { get; set; }
+
+    public virtual MediaAsset? GuideFile { get; set; }
+
+    public virtual Product? GuideProduct { get; set; }
 
     public virtual Product? Product { get; set; }
 }

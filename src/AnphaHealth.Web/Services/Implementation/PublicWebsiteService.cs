@@ -14,7 +14,9 @@ internal sealed class PublicWebsiteService(IRepository<DbContentPage> pages, IRe
     {
         slug = slug.Trim('/');
         return pages.ReadAsync((rows, token) => rows
-            .Where(row => row.IsPublished && row.Slug == slug && (kind == null || row.ContentKind == kind))
+            .Where(row => row.IsPublished && row.Slug == slug && (kind == null || row.ContentKind == kind)
+                && (row.ContentKind != "Guide" || (row.GuideProduct != null
+                    && row.GuideProduct.IsPublished && row.GuideProduct.ContentPage.IsPublished)))
             .Select(row => new PublicPage(row.Slug, row.Title, row.Html, row.SourceUrl, row.Summary,
                 row.ContentKind, row.FeaturedImage != null ? row.FeaturedImage.LocalPath : null,
                 row.PublishedAt, row.ContentPageMedia.OrderBy(link => link.SortOrder)
@@ -47,11 +49,24 @@ internal sealed class PublicWebsiteService(IRepository<DbContentPage> pages, IRe
                 row.ProductCategory.Icon, row.IsFeatured))
             .ToListAsync(token), cancellationToken);
 
+    public async Task<IReadOnlyList<PublicGuide>> ListGuidesAsync(string? slug = null, CancellationToken cancellationToken = default) =>
+        await pages.ReadAsync((rows, token) => rows
+            .Where(row => row.IsPublished && row.ContentKind == "Guide" && (slug == null || row.Slug == slug) && row.GuideProduct != null
+                && row.GuideProduct.IsPublished && row.GuideProduct.ContentPage.IsPublished)
+            .OrderBy(row => row.GuideProduct!.Brand).ThenBy(row => row.Title)
+            .Select(row => new PublicGuide(row.Slug, row.Title, row.Summary, row.GuideModel ?? "",
+                row.GuideProduct!.ContentPage.Slug, row.GuideProduct.Name, row.GuideProduct.Brand,
+                row.GuideProduct.ProductCategory.Name, row.IsGuideSample,
+                row.GuideFile != null ? row.GuideFile.LocalPath : null,
+                row.GuideProduct.FeaturedImage != null ? row.GuideProduct.FeaturedImage.LocalPath : null))
+            .ToListAsync(token), cancellationToken);
+
     public string Asset(string fileName) => library.Resolve(fileName);
 
     public string Route(string slug, string? kind = null) => kind switch
     {
         "Article" => "/tin-tuc/" + slug,
+        "Guide" => "/huong-dan-su-dung/" + slug,
         "Product" => "/san-pham/" + slug,
         _ => slug switch
         {

@@ -256,7 +256,8 @@ export function getHtml(root) {
 export function getHtmlStream(root) {
     // Returning a stream keeps article bodies out of the default SignalR message size limit.
     const html = getHtml(root);
-    return new Blob([html], { type: 'text/html;charset=utf-8' });
+    // Blazor requires a non-empty stream. StreamReader discards the UTF-8 BOM.
+    return new Blob([html || '\uFEFF'], { type: 'text/html;charset=utf-8' });
 }
 
 export function insertImage(root, source, alt = '') {

@@ -1,0 +1,97 @@
+@page "/huong-dan-su-dung/{Slug}"
+@inject IPublicWebsiteService Website
+@inject NavigationManager Navigation
+
+@if (content is { } pageContent && guide is { } document)
+{
+    var productUrl = "/san-pham/" + document.ProductSlug;
+    var contactUrl = "/lien-he?sanpham=" + Uri.EscapeDataString(document.ProductSlug);
+    var cover = pageContent.FeaturedImage ?? document.ProductImage;
+    var imageAlt = pageContent.FeaturedImage is not null ? document.Title : $"Ảnh minh họa nhóm {document.ProductName}";
+
+    <PageTitle>@document.Title — Hướng dẫn sử dụng</PageTitle>
+    <PageHero Eyebrow="Hướng dẫn sử dụng" Title="@document.Title" Description="@document.Summary" />
+
+    <div class="container guide-detail">
+        <nav class="guide-back" aria-label="Điều hướng tài liệu">
+            <a href="/huong-dan-su-dung">← Danh sách hướng dẫn</a>
+        </nav>
+
+        <div class="guide-columns">
+            <article class="guide-content">
+                <header class="guide-content-header">
+                    <span class="guide-model">@document.Model</span>
+                    <h2>Tài liệu sản phẩm</h2>
+                    @if (document.IsSample)
+                    {
+                        <p class="guide-notice"><strong>Hồ sơ mẫu.</strong> Anpha chưa công bố hướng dẫn chính thức cho model này.</p>
+                    }
+                    @if (document.FilePath is { } file)
+                    {
+                        <a class="button button-navy" href="@file" download>Tải xuống PDF <Icon Name="arrow" /></a>
+                    }
+                </header>
+
+                @if (!string.IsNullOrWhiteSpace(pageContent.Html))
+                {
+                    <div class="prose source-content guide-body">@((MarkupString)pageContent.Html)</div>
+                }
+
+                @if (document.IsSample)
+                {
+                    <div class="guide-reference" aria-labelledby="guide-example-heading">
+                        <div>
+                            <h3 id="guide-example-heading">Ví dụ tài liệu PDF</h3>
+                            <p>Premio · Pinnacle Health. Tệp minh họa cho chức năng mở PDF, dành cho sản phẩm Premio.</p>
+                        </div>
+                        <a class="text-link" href="@ExamplePdf" target="_blank" rel="noopener noreferrer">Mở PDF Premio <Icon Name="arrow" /></a>
+                    </div>
+                }
+            </article>
+
+            <aside class="guide-product" aria-labelledby="guide-product-heading">
+                @if (!string.IsNullOrWhiteSpace(cover))
+                {
+                    <figure class="guide-cover">
+                        <a href="@productUrl" aria-label="Xem @document.ProductName">
+                            <img src="@cover" alt="@imageAlt" />
+                        </a>
+                        @if (pageContent.FeaturedImage is null)
+                        {
+                            <figcaption>Ảnh từ trang sản phẩm liên quan</figcaption>
+                        }
+                    </figure>
+                }
+                <div class="guide-product-info">
+                    <h2 id="guide-product-heading">@document.ProductName</h2>
+                    <dl>
+                        <div><dt>Model</dt><dd>@document.Model</dd></div>
+                        <div><dt>Thương hiệu</dt><dd>@document.Brand</dd></div>
+                        <div><dt>Lĩnh vực</dt><dd>@document.Category</dd></div>
+                    </dl>
+                    <a class="button button-navy" href="@productUrl">Xem sản phẩm <Icon Name="arrow" /></a>
+                    @if (document.IsSample)
+                    {
+                        <a class="text-link guide-contact" href="@contactUrl">Yêu cầu tài liệu chính thức <Icon Name="arrow" /></a>
+                    }
+                </div>
+            </aside>
+        </div>
+    </div>
+}
+
+@code {
+    private const string ExamplePdf = "https://pinnaclehealth.com.vn/wp-content/uploads/2025/01/Huong-dan-su-dung-tieng-Viet_Premio.pdf";
+
+    [Parameter] public string Slug { get; set; } = "";
+    private PublicPage? content;
+    private PublicGuide? guide;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        content = await Website.GetPageAsync(Slug, "Guide");
+        guide = content is null ? null : (await Website.ListGuidesAsync(content.Slug)).SingleOrDefault();
+        if (guide is null)
+            Navigation.NotFound();
+    }
+}

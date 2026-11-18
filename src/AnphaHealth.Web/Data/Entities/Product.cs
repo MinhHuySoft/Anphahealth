@@ -31,6 +31,8 @@ public partial class Product
 
     public virtual ContentPage ContentPage { get; set; } = null!;
 
+    public virtual ICollection<ContentPage> ContentPages { get; set; } = new List<ContentPage>();
+
     public virtual MediaAsset? FeaturedImage { get; set; }
 
     public virtual ProductCategory ProductCategory { get; set; } = null!;

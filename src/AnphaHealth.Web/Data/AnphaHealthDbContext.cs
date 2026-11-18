@@ -75,6 +75,7 @@ public partial class AnphaHealthDbContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasPrecision(0)
                 .HasDefaultValueSql("(sysutcdatetime())", "DF_ContentPages_CreatedAt");
+            entity.Property(e => e.GuideModel).HasMaxLength(120);
             entity.Property(e => e.Html).HasDefaultValue("", "DF_ContentPages_Html");
             entity.Property(e => e.PlainText).HasDefaultValue("", "DF_ContentPages_PlainText");
             entity.Property(e => e.PublishedAt).HasPrecision(0);
@@ -86,9 +87,17 @@ public partial class AnphaHealthDbContext : DbContext
             entity.Property(e => e.Title).HasMaxLength(250);
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysutcdatetime())", "DF_ContentPages_UpdatedAt");
 
-            entity.HasOne(d => d.FeaturedImage).WithMany(p => p.ContentPages)
+            entity.HasOne(d => d.FeaturedImage).WithMany(p => p.ContentPageFeaturedImages)
                 .HasForeignKey(d => d.FeaturedImageId)
                 .HasConstraintName("FK_ContentPages_FeaturedImage");
+
+            entity.HasOne(d => d.GuideFile).WithMany(p => p.ContentPageGuideFiles)
+                .HasForeignKey(d => d.GuideFileId)
+                .HasConstraintName("FK_ContentPages_GuideFile");
+
+            entity.HasOne(d => d.GuideProduct).WithMany(p => p.ContentPages)
+                .HasForeignKey(d => d.GuideProductId)
+                .HasConstraintName("FK_ContentPages_GuideProduct");
         });
 
         modelBuilder.Entity<ContentPageMedium>(entity =>

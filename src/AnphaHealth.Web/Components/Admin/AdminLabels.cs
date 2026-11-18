@@ -11,6 +11,7 @@ internal static partial class AdminLabels
     {
         "Page" => "Trang",
         "Article" => "Bài viết",
+        "Guide" => "Hướng dẫn sử dụng",
         "Product" => "Sản phẩm",
         "Archive" => "Bản lưu",
         _ => kind

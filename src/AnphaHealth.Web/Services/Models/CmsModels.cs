@@ -18,6 +18,16 @@ public sealed record ContentListItem(int Id, string Title, string Slug, string K
 
 public sealed class ContentInput
 {
+    public int? GuideProductId { get; set; }
+
+    [StringLength(120)]
+    public string? GuideModel { get; set; }
+
+    [StringLength(450)]
+    public string? GuideFilePath { get; set; }
+
+    public bool IsGuideSample { get; set; }
+
     public int Id { get; set; }
 
     [Required(ErrorMessage = "Nhập tiêu đề."), StringLength(250)]

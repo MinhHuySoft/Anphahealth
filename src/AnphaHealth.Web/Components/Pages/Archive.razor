@@ -15,5 +15,6 @@
     {
         content = await Store.GetPageAsync(Slug ?? "home");
         if (content is null) Navigation.NotFound();
+        else if (content.Kind == "Guide") Navigation.NavigateTo(Store.Route(content.Slug, content.Kind), replace: true);
     }
 }

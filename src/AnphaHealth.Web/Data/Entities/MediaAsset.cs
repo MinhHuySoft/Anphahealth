@@ -21,9 +21,11 @@ public partial class MediaAsset
 
     public DateTime CreatedAt { get; set; }
 
-    public virtual ICollection<ContentPageMedium> ContentPageMedia { get; set; } = new List<ContentPageMedium>();
+    public virtual ICollection<ContentPage> ContentPageFeaturedImages { get; set; } = new List<ContentPage>();
 
-    public virtual ICollection<ContentPage> ContentPages { get; set; } = new List<ContentPage>();
+    public virtual ICollection<ContentPage> ContentPageGuideFiles { get; set; } = new List<ContentPage>();
+
+    public virtual ICollection<ContentPageMedium> ContentPageMedia { get; set; } = new List<ContentPageMedium>();
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

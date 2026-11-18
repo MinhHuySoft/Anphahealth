@@ -37,6 +37,10 @@ internal sealed class ContentService(IRepository<ContentPage> repository, CmsAcc
                 Title = row.Title,
                 Slug = row.Slug,
                 Kind = row.ContentKind,
+                GuideProductId = row.GuideProductId,
+                GuideModel = row.GuideModel,
+                GuideFilePath = row.GuideFile != null ? row.GuideFile.LocalPath : null,
+                IsGuideSample = row.IsGuideSample,
                 Summary = row.Summary,
                 Html = row.Html,
                 IsPublished = row.IsPublished,
@@ -50,7 +54,7 @@ internal sealed class ContentService(IRepository<ContentPage> repository, CmsAcc
     {
         await access.RequireAsync();
         CmsValidation.Validate(input);
-        if (input.Kind is not ("Page" or "Article" or "Archive"))
+        if (input.Kind is not ("Page" or "Article" or "Archive" or "Guide"))
             throw new CmsException("Chỉnh sửa nội dung sản phẩm trong mục Sản phẩm.");
 
         try
@@ -75,7 +79,41 @@ internal sealed class ContentService(IRepository<ContentPage> repository, CmsAcc
                 // Keep legacy hierarchical URLs when editing imported content.
                 var slug = !isNew && entity.Slug == input.Slug
                     ? entity.Slug
-                    : CmsValidation.Slug(input.Slug, allowHierarchy: input.Kind != "Article");
+                    : CmsValidation.Slug(input.Slug, allowHierarchy: input.Kind is not ("Article" or "Guide"));
+                entity.GuideProductId = null;
+                entity.GuideModel = null;
+                entity.GuideFileId = null;
+                entity.IsGuideSample = false;
+
+                if (input.Kind == "Guide")
+                {
+                    if (!input.GuideProductId.HasValue || !await context.Products.AnyAsync(
+                            product => product.Id == input.GuideProductId, token))
+                        throw new CmsException("Chọn sản phẩm liên quan cho hướng dẫn.");
+
+                    if (string.IsNullOrWhiteSpace(input.GuideModel))
+                        throw new CmsException("Nhập mã hoặc model sản phẩm.");
+
+                    entity.GuideProductId = input.GuideProductId;
+                    entity.GuideModel = input.GuideModel.Trim();
+                    entity.IsGuideSample = input.IsGuideSample;
+
+                    if (!string.IsNullOrWhiteSpace(input.GuideFilePath))
+                    {
+                        var path = input.GuideFilePath.Trim();
+                        entity.GuideFileId = await context.MediaAssets
+                            .Where(asset => asset.LocalPath == path && asset.ContentType == "application/pdf"
+                                && asset.LocalPath.StartsWith("/media/"))
+                            .Select(asset => (int?)asset.Id)
+                            .SingleOrDefaultAsync(token)
+                            ?? throw new CmsException("Dán đường dẫn PDF đã tải lên từ Thư viện tệp.");
+                    }
+
+                    if (input.IsPublished && entity.GuideFileId is null && string.IsNullOrWhiteSpace(
+                            ContentHtml.Sanitize(input.Html).Text))
+                        throw new CmsException("Thêm nội dung hoặc đính kèm PDF trước khi xuất bản.");
+                }
+
                 await ContentWriter.ApplyAsync(context, entity, input, slug, token);
                 if (isNew)
                     rows.Add(entity);

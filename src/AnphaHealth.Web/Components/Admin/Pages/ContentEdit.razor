@@ -63,6 +63,7 @@
                         <InputSelect @bind-Value="item.Kind" disabled="@(IsSystemPage || (Id > 0 && originalKind == "Archive"))">
                             <option value="Page">Trang</option>
                             <option value="Article">Bài viết</option>
+                            <option value="Guide">Hướng dẫn sử dụng</option>
                             @if (originalKind == "Archive")
                             {
                                 <option value="Archive">Bản lưu</option>
@@ -70,6 +71,35 @@
                         </InputSelect>
                     </label>
                 </section>
+                @if (item.Kind == "Guide")
+                {
+                    <section class="admin-card admin-form-card">
+                        <h2>Thông tin hướng dẫn</h2>
+                        <label class="admin-field">
+                            <span>Sản phẩm liên quan</span>
+                            <InputSelect @bind-Value="item.GuideProductId">
+                                <option value="">Chọn sản phẩm</option>
+                                @foreach (var product in guideProducts)
+                                {
+                                    <option value="@product.Id">@product.Name · @product.Brand</option>
+                                }
+                            </InputSelect>
+                        </label>
+                        <label class="admin-field">
+                            <span>Mã / model sản phẩm</span>
+                            <InputText @bind-Value="item.GuideModel" maxlength="120" />
+                        </label>
+                        <label class="admin-field">
+                            <span>Tệp PDF (tùy chọn)</span>
+                            <InputText @bind-Value="item.GuideFilePath" maxlength="450" placeholder="/media/uploads/..." />
+                            <small>Tải PDF lên và sao chép đường dẫn từ <a class="admin-link" href="/admin/thu-vien" target="_blank" rel="noopener">Thư viện tệp</a>.</small>
+                        </label>
+                        <label class="admin-check-row">
+                            <InputCheckbox @bind-Value="item.IsGuideSample" />
+                            <span><strong>Nội dung mẫu</strong></span>
+                        </label>
+                    </section>
+                }
                 <section class="admin-card admin-form-card">
                     <h2>Ảnh bìa</h2>
                     <AdminMediaPicker @bind-SelectedId="item.FeaturedImageId" InitialPath="@item.FeaturedImage" />
@@ -102,6 +132,7 @@ else
 
     private ContentInput? model;
     private TiptapEditor? editor;
+    private IReadOnlyList<ProductListItem> guideProducts = [];
     private string? originalKind;
     private string? error;
     private string? notice;
@@ -139,6 +170,12 @@ else
                 productUrl = product is null ? "/admin/san-pham" : $"/admin/san-pham/{product.Id}";
                 return;
             }
+
+            var productPage = await Products.ListAsync(new CmsQuery(PageSize: 100));
+            var productItems = productPage.Items.ToList();
+            for (var index = 2; index <= productPage.TotalPages; index++)
+                productItems.AddRange((await Products.ListAsync(new CmsQuery(Page: index, PageSize: 100))).Items);
+            guideProducts = productItems;
 
             originalKind = item.Kind;
             model = item;

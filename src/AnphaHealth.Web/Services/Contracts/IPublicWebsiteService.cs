@@ -6,6 +6,7 @@ public interface IPublicWebsiteService
     Task<IReadOnlyList<ArchiveEntry>> ListArchiveAsync(CancellationToken cancellationToken = default);
     Task<IReadOnlyList<ArticleSummary>> ListArticlesAsync(int? limit = null, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<PublicProduct>> ListProductsAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<PublicGuide>> ListGuidesAsync(string? slug = null, CancellationToken cancellationToken = default);
     string Asset(string fileName);
     string Route(string slug, string? kind = null);
 }
