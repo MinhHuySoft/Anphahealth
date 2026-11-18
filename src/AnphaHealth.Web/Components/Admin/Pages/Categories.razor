@@ -1,0 +1,159 @@
+@page "/admin/san-pham/danh-muc"
+@inject IProductService Products
+
+<PageTitle>Danh mục sản phẩm | Anpha Health</PageTitle>
+
+<AdminPageHeader Title="Danh mục sản phẩm" BackHref="/admin/san-pham" BackLabel="Sản phẩm"
+                 Description="Quản lý nhóm ngành hàng, biểu tượng và thứ tự hiển thị.">
+    <Actions>
+        <button type="button" class="admin-button admin-button-primary" @onclick="Create"><AdminIcon Name="plus" /> Thêm danh mục</button>
+    </Actions>
+</AdminPageHeader>
+<AdminAlert Message="@notice" />
+<AdminAlert Message="@error" IsError="true" />
+
+<div class="admin-settings-grid admin-categories-grid">
+    <section class="admin-card" aria-label="Danh mục hiện có">
+        <div class="admin-card-header"><div><h2>Danh mục hiện có</h2></div></div>
+        @if (loading)
+        {
+            <p class="admin-loading" role="status">Đang tải danh mục…</p>
+        }
+        else if (categories.Count > 0)
+        {
+            <div class="admin-table-scroll">
+                <table class="admin-table">
+                    <thead><tr><th>Danh mục</th><th>Thứ tự</th><th><span class="admin-sr-only">Hành động</span></th></tr></thead>
+                    <tbody>
+                        @foreach (var category in categories)
+                        {
+                            <tr>
+                                <td><div class="admin-product-cell"><span class="admin-recent-icon"><Icon Name="@category.Icon" /></span><div><button class="admin-table-title admin-text-button" type="button" @onclick="() => Edit(category)">@category.Name</button><small class="admin-table-subtitle">/@category.Slug</small></div></div></td>
+                                <td>@category.DisplayOrder</td>
+                                <td class="admin-table-action"><button class="admin-icon-button" type="button" aria-label="Sửa @category.Name" @onclick="() => Edit(category)"><AdminIcon Name="edit" /></button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else if (error is null)
+        {
+            <p class="admin-empty">Chưa có danh mục sản phẩm.</p>
+        }
+    </section>
+
+    <section class="admin-card admin-form-card">
+        @if (model is { } item)
+        {
+            <h2>@(item.Id == 0 ? "Danh mục mới" : "Chỉnh sửa danh mục")</h2>
+            <EditForm Model="@item" OnValidSubmit="SaveAsync" FormName="cms-category" @key="item">
+                <DataAnnotationsValidator />
+                <AdminAlert Message="@formError" IsError="true" />
+                <label class="admin-field"><span>Tên danh mục</span><InputText @bind-Value="item.Name" @bind-Value:after="FillSlug" maxlength="150" /><ValidationMessage For="() => item.Name" /></label>
+                <label class="admin-field"><span>Đường dẫn</span><InputText @bind-Value="item.Slug" maxlength="120" /><ValidationMessage For="() => item.Slug" /></label>
+                <label class="admin-field">
+                    <span>Biểu tượng</span>
+                    <InputSelect @bind-Value="item.Icon"><option value="cross">Dấu cộng y tế</option><option value="heart">Tim mạch</option><option value="shield">Khiên</option><option value="pulse">Nhịp tim</option></InputSelect>
+                </label>
+                <label class="admin-field"><span>Thứ tự</span><InputNumber @bind-Value="item.DisplayOrder" min="0" /><ValidationMessage For="() => item.DisplayOrder" /></label>
+                <div class="admin-picker-actions">
+                    <button type="submit" class="admin-button admin-button-primary" disabled="@saving">@(saving ? "Đang lưu…" : "Lưu danh mục")</button>
+                    <button type="button" class="admin-button admin-button-secondary" @onclick="Cancel">Hủy</button>
+                </div>
+            </EditForm>
+        }
+        else
+        {
+            <h2>Chỉnh sửa danh mục</h2><p>Chọn một danh mục trong danh sách hoặc thêm danh mục mới.</p>
+        }
+    </section>
+</div>
+
+@code {
+    private IReadOnlyList<CategoryItem> categories = [];
+    private CategoryInput? model;
+    private string? notice;
+    private string? error;
+    private string? formError;
+    private bool loading = true;
+    private bool saving;
+
+    protected override Task OnInitializedAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        loading = true;
+        error = null;
+        try
+        {
+            categories = await Products.GetCategoriesAsync();
+        }
+        catch (CmsException exception)
+        {
+            error = exception.Message;
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private void Create()
+    {
+        formError = null;
+        notice = null;
+        model = new CategoryInput { DisplayOrder = categories.Count == 0 ? 0 : categories.Max(item => item.DisplayOrder) + 1 };
+    }
+
+    private void Edit(CategoryItem item)
+    {
+        formError = null;
+        notice = null;
+        model = new CategoryInput
+        {
+            Id = item.Id,
+            Name = item.Name,
+            Slug = item.Slug,
+            Icon = item.Icon,
+            DisplayOrder = item.DisplayOrder
+        };
+    }
+
+    private void Cancel()
+    {
+        model = null;
+        formError = null;
+    }
+
+    private void FillSlug()
+    {
+        if (model is { Id: 0, Slug.Length: 0 } item)
+            item.Slug = AdminLabels.ToSlug(item.Name);
+    }
+
+    private async Task SaveAsync()
+    {
+        if (saving || model is not { } item)
+            return;
+
+        saving = true;
+        formError = null;
+        notice = null;
+        try
+        {
+            var id = await Products.SaveCategoryAsync(item);
+            item.Id = id;
+            notice = "Đã lưu danh mục.";
+            await LoadAsync();
+        }
+        catch (CmsException exception)
+        {
+            formError = exception.Message;
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+}

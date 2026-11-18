@@ -1,0 +1,191 @@
+@page "/admin/san-pham/tao-moi"
+@page "/admin/san-pham/{Id:int}"
+@inject IProductService Products
+@inject NavigationManager Navigation
+@inject ILogger<ProductEdit> Logger
+
+<PageTitle>@(Id == 0 ? "Thêm sản phẩm" : "Sửa sản phẩm") | Anpha Health</PageTitle>
+
+@if (model is { } item)
+{
+    <EditForm Model="@item" OnValidSubmit="SaveAsync" FormName="cms-product" @key="Id">
+        <DataAnnotationsValidator />
+        <AdminPageHeader Title="@(Id == 0 ? "Thêm sản phẩm" : "Sửa sản phẩm")" BackHref="/admin/san-pham" BackLabel="Sản phẩm"
+                         Description="Cập nhật thông tin, ảnh minh họa và nội dung chi tiết của thiết bị.">
+            <Actions>
+                @if (Id > 0 && item.IsPublished)
+                {
+                    <a class="admin-button admin-button-secondary" href="/san-pham/@item.Slug" target="_blank" rel="noopener"><AdminIcon Name="external" /> Xem trên web</a>
+                }
+                <button class="admin-button admin-button-primary" type="submit" disabled="@saving"><AdminIcon Name="check" /> @(saving ? "Đang lưu…" : "Lưu sản phẩm")</button>
+            </Actions>
+        </AdminPageHeader>
+        <AdminAlert Message="@error" IsError="true" />
+        <AdminAlert Message="@notice" />
+        <div class="admin-editor-layout">
+            <div class="admin-editor-main">
+                <section class="admin-card admin-form-card">
+                    <h2>Thông tin sản phẩm</h2>
+                    <label class="admin-field">
+                        <span>Tên sản phẩm <span aria-hidden="true">*</span></span>
+                        <InputText @bind-Value="item.Name" @bind-Value:after="FillSlug" placeholder="Tên thiết bị hoặc nhóm sản phẩm" maxlength="250" />
+                        <ValidationMessage For="() => item.Name" />
+                    </label>
+                    <div class="admin-fields-grid">
+                        <label class="admin-field">
+                            <span>Thương hiệu <span aria-hidden="true">*</span></span>
+                            <InputText @bind-Value="item.Brand" placeholder="Tên thương hiệu" maxlength="200" />
+                            <ValidationMessage For="() => item.Brand" />
+                        </label>
+                        <label class="admin-field">
+                            <span>Đường dẫn <span aria-hidden="true">*</span></span>
+                            <InputText @bind-Value="item.Slug" placeholder="ten-san-pham" maxlength="450" />
+                            <ValidationMessage For="() => item.Slug" />
+                        </label>
+                    </div>
+                    <label class="admin-field">
+                        <span>Mô tả ngắn</span>
+                        <InputTextArea @bind-Value="item.Description" rows="3" maxlength="500" placeholder="Thông tin hiển thị trên danh mục" />
+                        <ValidationMessage For="() => item.Description" />
+                    </label>
+                </section>
+                <section class="admin-card admin-form-card" aria-label="Chi tiết sản phẩm">
+                    <h2>Chi tiết sản phẩm</h2>
+                    <TiptapEditor @ref="editor" InitialHtml="@item.Html" />
+                </section>
+            </div>
+
+            <aside class="admin-editor-side" aria-label="Thiết lập sản phẩm">
+                <section class="admin-card admin-form-card">
+                    <h2>Hiển thị</h2>
+                    <AdminStatus Published="@item.IsPublished" />
+                    <label class="admin-check-row">
+                        <InputCheckbox @bind-Value="item.IsPublished" />
+                        <span><strong>Hiển thị trên website</strong><small>Bỏ chọn để lưu bản nháp.</small></span>
+                    </label>
+                    <label class="admin-check-row">
+                        <InputCheckbox @bind-Value="item.IsFeatured" />
+                        <span><strong>Sản phẩm nổi bật</strong><small>Hiển thị trong nhóm sản phẩm trên trang chủ.</small></span>
+                    </label>
+                    <label class="admin-field">
+                        <span>Danh mục <span aria-hidden="true">*</span></span>
+                        <InputSelect @bind-Value="item.CategoryId">
+                            <option value="0">Chọn danh mục</option>
+                            @foreach (var category in categories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="() => item.CategoryId" />
+                    </label>
+                    <label class="admin-field">
+                        <span>Thứ tự hiển thị</span>
+                        <InputNumber @bind-Value="item.DisplayOrder" min="0" />
+                        <small>Số nhỏ hơn hiển thị trước.</small>
+                        <ValidationMessage For="() => item.DisplayOrder" />
+                    </label>
+                </section>
+                <section class="admin-card admin-form-card">
+                    <h2>Ảnh đại diện</h2>
+                    <AdminMediaPicker @bind-SelectedId="item.FeaturedImageId" InitialPath="@item.FeaturedImage" />
+                </section>
+            </aside>
+        </div>
+    </EditForm>
+}
+else
+{
+    <AdminPageHeader Title="Sửa sản phẩm" BackHref="/admin/san-pham" BackLabel="Sản phẩm" />
+    <AdminAlert Message="@error" IsError="true" />
+    @if (loading)
+    {
+        <p class="admin-loading" role="status">Đang tải sản phẩm…</p>
+    }
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [SupplyParameterFromQuery(Name = "saved")] public bool Saved { get; set; }
+
+    private IReadOnlyList<CategoryItem> categories = [];
+    private ProductInput? model;
+    private TiptapEditor? editor;
+    private string? error;
+    private string? notice;
+    private bool loading;
+    private bool saving;
+    private int? loadedId;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (loadedId == Id)
+            return;
+
+        loadedId = Id;
+        model = null;
+        editor = null;
+        error = null;
+        notice = Saved ? "Đã lưu sản phẩm." : null;
+        loading = true;
+        try
+        {
+            categories = await Products.GetCategoriesAsync();
+            model = Id == 0 ? new ProductInput() : await Products.GetAsync(Id);
+            if (model is null)
+                error = "Không tìm thấy sản phẩm.";
+        }
+        catch (CmsException exception)
+        {
+            error = exception.Message;
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private void FillSlug()
+    {
+        if (model is { Id: 0, Slug.Length: 0 } item)
+            item.Slug = AdminLabels.ToSlug(item.Name);
+    }
+
+    private async Task SaveAsync()
+    {
+        if (saving || model is not { } item)
+            return;
+
+        saving = true;
+        notice = null;
+        error = null;
+        try
+        {
+            if (editor is not null)
+                item.Html = await editor.GetHtmlAsync();
+
+            var id = await Products.SaveAsync(item);
+            if (Id == 0)
+            {
+                Navigation.NavigateTo($"/admin/san-pham/{id}?saved=true");
+                return;
+            }
+
+            var saved = await Products.GetAsync(id);
+            item.UpdatedAt = saved?.UpdatedAt;
+            notice = "Đã lưu sản phẩm.";
+        }
+        catch (CmsException exception)
+        {
+            error = exception.Message;
+        }
+        catch (JSException exception)
+        {
+            Logger.LogWarning(exception, "Could not read editor for product {ProductId}", Id);
+            error = "Không đọc được nội dung trình soạn thảo. Hãy thử lưu lại.";
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+}

@@ -1,0 +1,246 @@
+@page "/admin/thu-vien"
+@inject IMediaService Media
+@inject IJSRuntime JS
+@inject ILogger<MediaLibrary> Logger
+
+<PageTitle>Thư viện ảnh | Anpha Health</PageTitle>
+
+<AdminPageHeader Title="Thư viện ảnh" Description="Tải ảnh, chỉnh sửa mô tả thay thế và sao chép đường dẫn để chèn vào nội dung.">
+    <Actions>
+        <button class="admin-button admin-button-primary" type="button" aria-expanded="@showUpload" @onclick="ToggleUpload"><AdminIcon Name="upload" /> Tải ảnh lên</button>
+    </Actions>
+</AdminPageHeader>
+<AdminAlert Message="@notice" />
+<AdminAlert Message="@error" IsError="true" />
+
+@if (showUpload)
+{
+    <section class="admin-card admin-form-card admin-upload-card" aria-label="Tải ảnh lên">
+        <div class="admin-card-title-row"><h2>Tệp mới</h2><button class="admin-icon-button" type="button" aria-label="Đóng vùng tải ảnh" @onclick="ToggleUpload"><AdminIcon Name="close" /></button></div>
+        <div class="admin-fields-grid">
+            <label class="admin-field">
+                <span>Chọn tệp ảnh</span>
+                <InputFile OnChange="SelectFile" accept="image/png,image/jpeg,image/gif,image/webp" disabled="@uploading" @key="uploadKey" />
+                <small>PNG, JPEG, GIF, WebP · Tối đa 8 MB</small>
+            </label>
+            <label class="admin-field">
+                <span>Văn bản thay thế</span>
+                <input @bind="altText" maxlength="250" placeholder="Mô tả ngắn nội dung ảnh" disabled="@uploading" />
+                <small>Dùng cho người đọc màn hình.</small>
+            </label>
+        </div>
+        <button class="admin-button admin-button-primary" type="button" disabled="@(selectedFile is null || uploading)" @onclick="UploadAsync"><AdminIcon Name="upload" /> @(uploading ? "Đang tải lên…" : "Lưu vào thư viện")</button>
+    </section>
+}
+
+<section class="admin-card" aria-label="Danh sách ảnh">
+    <form class="admin-filters" @onsubmit="SearchAsync" @onsubmit:preventDefault>
+        <label class="admin-search">
+            <span class="admin-sr-only">Tìm tệp</span>
+            <AdminIcon Name="search" />
+            <input type="search" @bind="search" placeholder="Tên tệp hoặc văn bản thay thế…" />
+        </label>
+        <button class="admin-button admin-button-secondary" type="submit">Tìm kiếm</button>
+    </form>
+
+    @if (loading)
+    {
+        <p class="admin-loading" role="status">Đang tải thư viện…</p>
+    }
+    else if (result is { Items.Count: > 0 } data)
+    {
+        <div class="admin-library-grid">
+            @foreach (var item in data.Items)
+            {
+                <article class="admin-library-item" @key="item.Id">
+                    <button type="button" class="admin-library-image" aria-label="Xem thông tin @item.FileName" @onclick="() => Edit(item)">
+                        <img src="@item.LocalPath" alt="@item.AltText" loading="lazy" />
+                    </button>
+                    <div class="admin-library-caption">
+                        <button type="button" class="admin-media-title" title="@item.FileName" @onclick="() => Edit(item)">@item.FileName</button>
+                        <small>@AdminLabels.FileSize(item.ByteLength) · @item.CreatedAt.ToString("dd/MM/yyyy")</small>
+                    </div>
+                    <div class="admin-library-actions">
+                        <button type="button" class="admin-icon-button" aria-label="Sao chép URL @item.FileName" title="Sao chép đường dẫn" @onclick="() => CopyAsync(item)"><AdminIcon Name="copy" /></button>
+                        <button type="button" class="admin-icon-button" aria-label="Sửa mô tả @item.FileName" title="Sửa mô tả ảnh" @onclick="() => Edit(item)"><AdminIcon Name="edit" /></button>
+                    </div>
+                </article>
+            }
+        </div>
+        <AdminPagination Total="@data.TotalCount" Page="@data.Page" PageSize="@data.PageSize" PageChanged="LoadAsync" />
+    }
+    else if (error is null)
+    {
+        <p class="admin-empty">Không tìm thấy tệp phù hợp.</p>
+    }
+</section>
+
+@if (editing is { } selected)
+{
+    <div class="admin-dialog-backdrop">
+        <section class="admin-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-media-dialog-title" @onkeydown="HandleDialogKeys">
+            <div class="admin-card-title-row"><h2 id="admin-media-dialog-title">Thông tin ảnh</h2><button class="admin-icon-button" type="button" aria-label="Đóng chi tiết ảnh" @onclick="CloseEdit"><AdminIcon Name="close" /></button></div>
+            <div class="admin-media-preview"><img src="@selected.LocalPath" alt="@selected.AltText" /></div>
+            <p class="admin-media-filename">@selected.FileName · @AdminLabels.FileSize(selected.ByteLength)</p>
+            <AdminAlert Message="@dialogError" IsError="true" />
+            <label class="admin-field"><span>Đường dẫn ảnh</span><input value="@selected.LocalPath" readonly /></label>
+            <label class="admin-field"><span>Văn bản thay thế</span><input @bind="editingAltText" maxlength="250" placeholder="Mô tả ngắn nội dung ảnh" /></label>
+            <div class="admin-dialog-actions">
+                <button type="button" class="admin-button admin-button-secondary" @onclick="() => CopyAsync(selected)"><AdminIcon Name="@(copied ? "check" : "copy")" /> @(copied ? "Đã sao chép" : "Sao chép URL")</button>
+                <button type="button" class="admin-button admin-button-primary" disabled="@savingAlt" @onclick="SaveAltAsync">@(savingAlt ? "Đang lưu…" : "Lưu mô tả")</button>
+            </div>
+        </section>
+    </div>
+}
+
+@code {
+    private const long FileLimit = 8 * 1024 * 1024;
+    private PagedResult<MediaItem>? result;
+    private IBrowserFile? selectedFile;
+    private MediaItem? editing;
+    private string search = "";
+    private string altText = "";
+    private string editingAltText = "";
+    private string? notice;
+    private string? error;
+    private string? dialogError;
+    private bool loading = true;
+    private bool uploading;
+    private bool savingAlt;
+    private bool showUpload;
+    private bool copied;
+    private int uploadKey;
+    private int loadVersion;
+
+    protected override Task OnInitializedAsync() => LoadAsync(1);
+    private Task SearchAsync() => LoadAsync(1);
+    private void ToggleUpload() => showUpload = !showUpload;
+
+    private async Task LoadAsync(int page)
+    {
+        var request = ++loadVersion;
+        loading = true;
+        try
+        {
+            var data = await Media.ListAsync(new CmsQuery(Search: search, Page: page, PageSize: 24));
+            if (request == loadVersion)
+                result = data;
+        }
+        catch (CmsException exception)
+        {
+            if (request == loadVersion)
+                error = exception.Message;
+        }
+        finally
+        {
+            if (request == loadVersion)
+                loading = false;
+        }
+    }
+
+    private void SelectFile(InputFileChangeEventArgs args)
+    {
+        error = null;
+        notice = null;
+        selectedFile = args.File;
+        if (selectedFile.Size > FileLimit)
+        {
+            error = "Chọn ảnh có dung lượng tối đa 8 MB.";
+            selectedFile = null;
+            uploadKey++;
+        }
+    }
+
+    private async Task UploadAsync()
+    {
+        if (selectedFile is not { } file || uploading)
+            return;
+
+        uploading = true;
+        error = null;
+        notice = null;
+        try
+        {
+            await using var stream = file.OpenReadStream(FileLimit);
+            var uploaded = await Media.UploadAsync(stream, file.Name, file.ContentType, file.Size, altText);
+            selectedFile = null;
+            altText = "";
+            uploadKey++;
+            showUpload = false;
+            search = "";
+            notice = $"Đã thêm {uploaded.FileName} vào thư viện.";
+            await LoadAsync(1);
+        }
+        catch (CmsException exception)
+        {
+            error = exception.Message;
+        }
+        catch (IOException exception)
+        {
+            Logger.LogWarning(exception, "Could not read CMS image upload");
+            error = "Không đọc được tệp. Vui lòng chọn lại ảnh.";
+        }
+        finally
+        {
+            uploading = false;
+        }
+    }
+
+    private void Edit(MediaItem item)
+    {
+        editing = item;
+        editingAltText = item.AltText;
+        dialogError = null;
+        copied = false;
+    }
+
+    private void CloseEdit() => editing = null;
+
+    private void HandleDialogKeys(KeyboardEventArgs args)
+    {
+        if (args.Key == "Escape")
+            CloseEdit();
+    }
+
+    private async Task CopyAsync(MediaItem item)
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", item.LocalPath);
+            if (editing is not null)
+                copied = true;
+            else
+                notice = "Đã sao chép đường dẫn ảnh.";
+        }
+        catch (JSException)
+        {
+            if (editing is null)
+                Edit(item);
+            dialogError = "Trình duyệt chặn sao chép. Hãy chọn và sao chép đường dẫn trong ô bên dưới.";
+        }
+    }
+
+    private async Task SaveAltAsync()
+    {
+        if (editing is not { } item || savingAlt)
+            return;
+
+        savingAlt = true;
+        dialogError = null;
+        try
+        {
+            await Media.UpdateAltTextAsync(item.Id, editingAltText);
+            CloseEdit();
+            notice = "Đã lưu mô tả ảnh.";
+            await LoadAsync(result?.Page ?? 1);
+        }
+        catch (CmsException exception)
+        {
+            dialogError = exception.Message;
+        }
+        finally
+        {
+            savingAlt = false;
+        }
+    }
+}

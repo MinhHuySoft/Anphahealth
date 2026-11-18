@@ -1,4 +1,4 @@
-@inject ContentStore Store
+@inject IPublicWebsiteService Store
 <section class="page-hero" style="--page-image:url('@Store.Asset("sub-contact-bg.jpg")')"><div class="container"><div class="breadcrumb"><a href="/">Trang chủ</a><span>/</span><span>@Eyebrow</span></div><h1>@Title</h1><p>@Description</p></div></section>
 @code {
     [Parameter] public string Eyebrow { get; set; } = "Anpha Health";

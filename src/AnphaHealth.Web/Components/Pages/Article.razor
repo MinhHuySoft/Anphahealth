@@ -1,9 +1,20 @@
 @page "/tin-tuc/{Slug}"
-@inject ContentStore Store
+@inject IPublicWebsiteService Store
+@inject NavigationManager Navigation
 @if (Content is { } c)
 {
     <PageTitle>@c.Title — Anpha Health</PageTitle>
     <PageHero Eyebrow="Tin tức" Title="@c.Title" Description="Góc thông tin Anpha Health" />
-    <section class="section"><div class="container article-layout"><article><div class="article-meta"><span>TIN TỨC & CHIA SẺ</span><time>@(Slug == "tim-hieu-ve-tui-nang-nguc" ? "10.10.2016" : "27.09.2016")</time></div><div class="prose source-content">@((MarkupString)c.Html)</div>@if (Slug == "gioi-thieu-ve-tap-doan-gca-nagor") { <div class="empty-note"><Icon Name="cross" /><p>Website gốc giới thiệu quy trình sản xuất của GCA – Nagor qua video nhúng. Bản lưu nội dung giữ phần giới thiệu; video bên ngoài chưa được tải về.</p></div> }<a href="/tin-tuc" class="text-link">← Trở về trang tin tức</a></article><aside class="help-card"><span class="eyebrow light">ANPHA HEALTH</span><h3>Khám phá danh mục thiết bị y tế.</h3><p>Thông tin sản phẩm, thương hiệu và lĩnh vực chuyên môn.</p><a href="/san-pham" class="button button-white">Xem sản phẩm <Icon Name="arrow" /></a></aside></div></section>
+    <section class="section"><div class="container article-layout"><article><div class="article-meta"><span>TIN TỨC & CHIA SẺ</span><time>@c.PublishedAt?.ToString("dd.MM.yyyy")</time></div><div class="prose source-content">@((MarkupString)c.Html)</div>@if (Slug == "gioi-thieu-ve-tap-doan-gca-nagor") { <div class="empty-note"><Icon Name="cross" /><p>Website gốc giới thiệu quy trình sản xuất của GCA – Nagor qua video nhúng. Bản lưu nội dung giữ phần giới thiệu; video bên ngoài chưa được tải về.</p></div> }<a href="/tin-tuc" class="text-link">← Trở về trang tin tức</a></article><aside class="help-card"><span class="eyebrow light">ANPHA HEALTH</span><h3>Khám phá danh mục thiết bị y tế.</h3><p>Thông tin sản phẩm, thương hiệu và lĩnh vực chuyên môn.</p><a href="/san-pham" class="button button-white">Xem sản phẩm <Icon Name="arrow" /></a></aside></div></section>
 } else { <PageHero Title="Không tìm thấy bài viết" /><div class="container section"><a href="/tin-tuc">Trở về tin tức</a></div> }
-@code { [Parameter] public string Slug { get; set; } = ""; ContentPage? Content => Store.Get(Slug); }
+
+@code {
+    [Parameter] public string Slug { get; set; } = "";
+    private PublicPage? Content;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Content = await Store.GetPageAsync(Slug, "Article");
+        if (Content is null) Navigation.NotFound();
+    }
+}

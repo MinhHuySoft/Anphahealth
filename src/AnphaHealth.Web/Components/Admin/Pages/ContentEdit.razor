@@ -1,0 +1,201 @@
+@page "/admin/noi-dung/tao-moi"
+@page "/admin/noi-dung/{Id:int}"
+@inject IContentService Content
+@inject IProductService Products
+@inject IPublicWebsiteService Website
+@inject NavigationManager Navigation
+@inject ILogger<ContentEdit> Logger
+
+<PageTitle>@(Id == 0 ? "Tạo nội dung" : "Sửa nội dung") | Anpha Health</PageTitle>
+
+@if (model is { } item)
+{
+    <EditForm Model="@item" OnValidSubmit="SaveAsync" FormName="cms-content" @key="Id">
+        <DataAnnotationsValidator />
+        <AdminPageHeader Title="@(Id == 0 ? "Tạo nội dung" : "Sửa nội dung")" BackHref="/admin/noi-dung" BackLabel="Nội dung"
+                         Description="Soạn nội dung và chọn thời điểm hiển thị trên website.">
+            <Actions>
+                @if (item.IsPublished && Id > 0)
+                {
+                    <a class="admin-button admin-button-secondary" href="@Website.Route(item.Slug, item.Kind)" target="_blank" rel="noopener"><AdminIcon Name="external" /> Xem trên web</a>
+                }
+                <button class="admin-button admin-button-primary" type="submit" disabled="@saving"><AdminIcon Name="check" /> @(saving ? "Đang lưu…" : "Lưu nội dung")</button>
+            </Actions>
+        </AdminPageHeader>
+        <AdminAlert Message="@error" IsError="true" />
+        <AdminAlert Message="@notice" />
+        <div class="admin-editor-layout">
+            <div class="admin-editor-main">
+                <section class="admin-card admin-form-card">
+                    <h2>Thông tin nội dung</h2>
+                    <label class="admin-field">
+                        <span>Tiêu đề <span aria-hidden="true">*</span></span>
+                        <InputText @bind-Value="item.Title" @bind-Value:after="FillSlug" placeholder="Tiêu đề hiển thị trên website" maxlength="250" />
+                        <ValidationMessage For="() => item.Title" />
+                    </label>
+                    <label class="admin-field">
+                        <span>Đường dẫn <span aria-hidden="true">*</span></span>
+                        <InputText @bind-Value="item.Slug" readonly="@IsSystemPage" placeholder="vi-du-ten-bai-viet" maxlength="450" />
+                        <ValidationMessage For="() => item.Slug" />
+                    </label>
+                    <label class="admin-field">
+                        <span>Tóm tắt</span>
+                        <InputTextArea @bind-Value="item.Summary" rows="3" maxlength="500" placeholder="Mô tả ngắn cho thẻ nội dung và kết quả tìm kiếm" />
+                        <ValidationMessage For="() => item.Summary" />
+                    </label>
+                </section>
+                <section class="admin-card admin-form-card" aria-label="Nội dung bài">
+                    <h2>Nội dung bài</h2>
+                    <TiptapEditor @ref="editor" InitialHtml="@item.Html" />
+                </section>
+            </div>
+
+            <aside class="admin-editor-side" aria-label="Thiết lập nội dung">
+                <section class="admin-card admin-form-card">
+                    <h2>Xuất bản</h2>
+                    <AdminStatus Published="@item.IsPublished" />
+                    <label class="admin-check-row">
+                        <InputCheckbox @bind-Value="item.IsPublished" />
+                        <span><strong>Hiển thị trên website</strong><small>Bỏ chọn để lưu dưới dạng bản nháp.</small></span>
+                    </label>
+                    <label class="admin-field">
+                        <span>Loại nội dung</span>
+                        <InputSelect @bind-Value="item.Kind" disabled="@(IsSystemPage || (Id > 0 && originalKind == "Archive"))">
+                            <option value="Page">Trang</option>
+                            <option value="Article">Bài viết</option>
+                            @if (originalKind == "Archive")
+                            {
+                                <option value="Archive">Bản lưu</option>
+                            }
+                        </InputSelect>
+                    </label>
+                </section>
+                <section class="admin-card admin-form-card">
+                    <h2>Ảnh bìa</h2>
+                    <AdminMediaPicker @bind-SelectedId="item.FeaturedImageId" InitialPath="@item.FeaturedImage" />
+                </section>
+            </aside>
+        </div>
+    </EditForm>
+}
+else
+{
+    <AdminPageHeader Title="Sửa nội dung" BackHref="/admin/noi-dung" BackLabel="Nội dung" />
+    <AdminAlert Message="@error" IsError="true" />
+    @if (loading)
+    {
+        <p class="admin-loading" role="status">Đang tải nội dung…</p>
+    }
+    else if (productUrl is not null)
+    {
+        <section class="admin-card admin-form-card">
+            <h2>Nội dung sản phẩm</h2>
+            <p>Chỉnh sửa nội dung, danh mục và ảnh của mục này trong trình quản lý sản phẩm.</p>
+            <a class="admin-button admin-button-primary" href="@productUrl">Mở sản phẩm <AdminIcon Name="arrow" /></a>
+        </section>
+    }
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [SupplyParameterFromQuery(Name = "saved")] public bool Saved { get; set; }
+
+    private ContentInput? model;
+    private TiptapEditor? editor;
+    private string? originalKind;
+    private string? error;
+    private string? notice;
+    private string? productUrl;
+    private bool loading;
+    private bool saving;
+    private int? loadedId;
+    private bool IsSystemPage => model is { Id: > 0, Slug: var slug } && PublicPageRoutes.IsSystemPage(slug);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (loadedId == Id)
+            return;
+
+        loadedId = Id;
+        model = null;
+        editor = null;
+        productUrl = null;
+        error = null;
+        notice = Saved ? "Đã lưu nội dung." : null;
+        loading = true;
+        try
+        {
+            var item = Id == 0 ? new ContentInput() : await Content.GetAsync(Id);
+            if (item is null)
+            {
+                error = "Không tìm thấy nội dung.";
+                return;
+            }
+
+            if (item.Kind == "Product")
+            {
+                var candidates = await Products.ListAsync(new CmsQuery(Search: item.Slug));
+                var product = candidates.Items.FirstOrDefault(product => product.ContentId == item.Id);
+                productUrl = product is null ? "/admin/san-pham" : $"/admin/san-pham/{product.Id}";
+                return;
+            }
+
+            originalKind = item.Kind;
+            model = item;
+        }
+        catch (CmsException exception)
+        {
+            error = exception.Message;
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private void FillSlug()
+    {
+        if (model is { Id: 0, Slug.Length: 0 } item)
+            item.Slug = AdminLabels.ToSlug(item.Title);
+    }
+
+    private async Task SaveAsync()
+    {
+        if (saving || model is not { } item)
+            return;
+
+        saving = true;
+        notice = null;
+        error = null;
+        try
+        {
+            if (editor is not null)
+                item.Html = await editor.GetHtmlAsync();
+
+            var id = await Content.SaveAsync(item);
+            if (Id == 0)
+            {
+                Navigation.NavigateTo($"/admin/noi-dung/{id}?saved=true");
+                return;
+            }
+
+            var saved = await Content.GetAsync(id);
+            item.UpdatedAt = saved?.UpdatedAt;
+            notice = "Đã lưu nội dung.";
+        }
+        catch (CmsException exception)
+        {
+            error = exception.Message;
+        }
+        catch (JSException exception)
+        {
+            Logger.LogWarning(exception, "Could not read editor for content {ContentId}", Id);
+            error = "Không đọc được nội dung trình soạn thảo. Hãy thử lưu lại.";
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+
+}

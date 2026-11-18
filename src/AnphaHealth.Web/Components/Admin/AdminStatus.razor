@@ -1,0 +1,9 @@
+<span class="admin-status @(Published ? "is-published" : "is-draft")">
+    <span aria-hidden="true"></span>
+    @(Published ? "Đã xuất bản" : "Bản nháp")
+</span>
+
+@code {
+    [Parameter]
+    public bool Published { get; set; }
+}

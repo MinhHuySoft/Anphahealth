@@ -1,0 +1,6 @@
+@using Microsoft.AspNetCore.Authorization
+@using AnphaHealth.Web.Components.Admin
+@using AnphaHealth.Web.Services.Contracts
+@using AnphaHealth.Web.Services.Models
+@layout AdminLayout
+@attribute [Authorize(Policy = "CmsAdmin")]

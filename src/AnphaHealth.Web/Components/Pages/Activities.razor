@@ -1,5 +1,11 @@
 @page "/hoat-dong"
+
 <PageTitle>Hoạt động — Anpha Health</PageTitle>
-<PageHero Eyebrow="Hoạt động" Title="Kết nối từ những giá trị chung." Description="Hình ảnh công ty và các hoạt động cùng cộng đồng." />
-<section class="section"><div class="container"><div class="content-tabs" role="tablist" aria-label="Hoạt động"><button role="tab" aria-selected="@(!social)" class="@(!social ? "active" : "")" @onclick="() => social = false">Hình ảnh công ty</button><button role="tab" aria-selected="@social" class="@(social ? "active" : "")" @onclick="() => social = true">Hoạt động xã hội</button></div><div class="empty-state"><Icon Name="heart" /><span class="eyebrow">ANPHA HEALTH</span><h2>@(social ? "Hoạt động xã hội" : "Hình ảnh công ty")</h2><p>Nội dung đang được cập nhật trên website hiện tại.<br />Các hình ảnh và hoạt động sẽ được bổ sung khi có thông tin từ Anpha.</p><a href="/lien-he" class="button button-navy">Kết nối với chúng tôi <Icon Name="arrow" /></a></div></div></section>
-@code { bool social; }
+<PageHero Eyebrow="Hoạt động" Title="Hoạt động Anpha Health" Description="Hình ảnh công ty và các hoạt động cùng cộng đồng." />
+<section class="section">
+    <div class="container"><ContentTabs Slugs="@activitySlugs" AccessibleName="Hoạt động" /></div>
+</section>
+
+@code {
+    private static readonly string[] activitySlugs = ["hinh-anh-cong-ty", "hoat-dong-xa-hoi"];
+}

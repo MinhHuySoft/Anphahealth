@@ -1,0 +1,125 @@
+{
+  "categories": [
+    { "slug": "loc-mau-loc-than", "name": "Lọc máu & lọc thận", "icon": "pulse", "displayOrder": 10 },
+    { "slug": "can-thiep-mach", "name": "Can thiệp mạch", "icon": "heart", "displayOrder": 20 },
+    { "slug": "tim-phoi-van-tim", "name": "Tim phổi & van tim", "icon": "cross", "displayOrder": 30 },
+    { "slug": "cay-ghep-nguc", "name": "Cấy ghép ngực", "icon": "shield", "displayOrder": 40 }
+  ],
+  "products": [
+    {
+      "slug": "fresenious-medicalcare-fmc",
+      "category": "loc-mau-loc-than",
+      "name": "Lọc máu, lọc thận nhân tạo",
+      "brand": "Fresenius Medical Care",
+      "description": "Máy lọc thận, màng lọc và vật tư cho điều trị thay thế thận.",
+      "image": "image21.jpg",
+      "isFeatured": true,
+      "displayOrder": 10
+    },
+    {
+      "slug": "c-i-d",
+      "category": "can-thiep-mach",
+      "name": "Can thiệp mạch vành & ngoại biên",
+      "brand": "CID · Alvimedica",
+      "description": "Stent, bóng nong và ống thông phục vụ can thiệp mạch.",
+      "image": "image3.jpg",
+      "isFeatured": true,
+      "displayOrder": 20
+    },
+    {
+      "slug": "medtronic",
+      "category": "tim-phoi-van-tim",
+      "name": "Tim phổi, van tim",
+      "brand": "Medtronic",
+      "description": "Van tim và các vật tư cho phẫu thuật tim, tuần hoàn ngoài cơ thể.",
+      "image": "image22.jpg",
+      "isFeatured": true,
+      "displayOrder": 30
+    },
+    {
+      "slug": "nagor-page",
+      "category": "cay-ghep-nguc",
+      "name": "Vật liệu cấy ghép ngực",
+      "brand": "Nagor",
+      "description": "Các dòng sản phẩm cấy ghép ngực CoGel, IMPLEO, RGI và GFX.",
+      "image": "Picture15.jpg",
+      "isFeatured": true,
+      "displayOrder": 40
+    },
+    {
+      "slug": "cogel",
+      "category": "cay-ghep-nguc",
+      "name": "CoGel",
+      "brand": "Nagor",
+      "description": "Dòng sản phẩm cấy ghép ngực CoGel của Nagor.",
+      "image": "cogel_Nagor.jpg",
+      "isFeatured": false,
+      "displayOrder": 50
+    },
+    {
+      "slug": "tui-nang-nguc-impleo",
+      "category": "cay-ghep-nguc",
+      "name": "IMPLEO",
+      "brand": "Nagor",
+      "description": "Thông tin dòng túi nâng ngực IMPLEO từ website hiện tại.",
+      "image": "impleo_impleo.jpg",
+      "isFeatured": false,
+      "displayOrder": 60
+    },
+    {
+      "slug": "rgi",
+      "category": "cay-ghep-nguc",
+      "name": "RGI",
+      "brand": "Nagor",
+      "description": "Dòng sản phẩm cấy ghép ngực RGI của Nagor.",
+      "image": "RGI_nagor.jpg",
+      "isFeatured": false,
+      "displayOrder": 70
+    },
+    {
+      "slug": "gfx",
+      "category": "cay-ghep-nguc",
+      "name": "GFX",
+      "brand": "Nagor",
+      "description": "Dòng sản phẩm cấy ghép ngực GFX của Nagor.",
+      "image": "GFX_nagor.jpg",
+      "isFeatured": false,
+      "displayOrder": 80
+    }
+  ],
+  "articles": [
+    {
+      "slug": "tim-hieu-ve-tui-nang-nguc",
+      "publishedAt": "2016-10-10T08:09:23",
+      "summary": "Bài viết chia sẻ thông tin về các loại túi nâng ngực, chất liệu và đặc điểm sản phẩm.",
+      "image": "tui-nguc-1_UPFT.jpg"
+    },
+    {
+      "slug": "gioi-thieu-ve-tap-doan-gca-nagor",
+      "publishedAt": "2016-09-27T07:04:52",
+      "summary": "Tìm hiểu thương hiệu GCA – Nagor và quy trình sản xuất được giới thiệu trên website Anpha.",
+      "image": "banner-nago1r.jpg"
+    }
+  ],
+  "pages": [
+    "home",
+    "gioi-thieu",
+    "san-pham-page",
+    "tin-tuc",
+    "lien-he",
+    "hinh-anh-cong-ty",
+    "hoat-dong-xa-hoi",
+    "tin-tuyen-dung",
+    "chinh-sach-cong-ty",
+    "ung-tuyen"
+  ],
+  "settings": {
+    "SiteName": "Anpha Health",
+    "Email": "lienhe@anphahealth.com",
+    "Phone": "028 3977 8936",
+    "Fax": "028 3977 8836",
+    "Address": "881 Trường Chinh, P. Tây Thạnh, Q. Tân Phú, TP. Hồ Chí Minh, Việt Nam",
+    "OfficeAddress": "51/8 Thành Thái, P. 14, Q. 10, TP. Hồ Chí Minh, Việt Nam",
+    "Tagline": "Đồng hành cùng y khoa, chăm sóc sức khỏe cộng đồng"
+  }
+}

@@ -1,0 +1,104 @@
+@page "/admin"
+@inject IDashboardService DashboardService
+
+<PageTitle>Bảng điều khiển | Anpha Health</PageTitle>
+
+<AdminPageHeader Title="Bảng điều khiển"
+                 Description="Theo dõi nội dung, danh mục và yêu cầu tư vấn của website Anpha Health.">
+    <Actions>
+        <a class="admin-button admin-button-primary" href="/admin/noi-dung/tao-moi">
+            <AdminIcon Name="plus" /> Tạo nội dung
+        </a>
+    </Actions>
+</AdminPageHeader>
+<AdminAlert Message="@error" IsError="true" />
+
+@if (stats is null && error is null)
+{
+    <p class="admin-loading" role="status">Đang tải tổng quan…</p>
+}
+else if (stats is { } data)
+{
+    <section class="admin-stats" aria-label="Số liệu website">
+        <a class="admin-stat" href="/admin/noi-dung">
+            <span class="admin-stat-icon is-teal"><AdminIcon Name="document" /></span>
+            <span class="admin-stat-label">Nội dung</span>
+            <strong>@data.ContentCount</strong>
+            <span class="admin-stat-detail">@data.PublishedCount đã xuất bản</span>
+        </a>
+        <a class="admin-stat" href="/admin/san-pham">
+            <span class="admin-stat-icon is-blue"><AdminIcon Name="package" /></span>
+            <span class="admin-stat-label">Sản phẩm</span>
+            <strong>@data.ProductCount</strong>
+            <span class="admin-stat-detail">Trong danh mục</span>
+        </a>
+        <a class="admin-stat" href="/admin/thu-vien">
+            <span class="admin-stat-icon is-violet"><AdminIcon Name="image" /></span>
+            <span class="admin-stat-label">Tệp đa phương tiện</span>
+            <strong>@data.MediaCount</strong>
+            <span class="admin-stat-detail">Trong thư viện</span>
+        </a>
+        <a class="admin-stat" href="/admin/yeu-cau">
+            <span class="admin-stat-icon is-amber"><AdminIcon Name="mail" /></span>
+            <span class="admin-stat-label">Yêu cầu chưa đọc</span>
+            <strong>@data.UnreadCount</strong>
+            <span class="admin-stat-detail">Từ form liên hệ</span>
+        </a>
+    </section>
+
+    <div class="admin-dashboard-grid">
+        <section class="admin-card">
+            <div class="admin-card-header">
+                <div><h2>Nội dung cập nhật</h2><p>Các thay đổi gần nhất trên website.</p></div>
+                <a class="admin-link" href="/admin/noi-dung">Xem tất cả <AdminIcon Name="arrow" /></a>
+            </div>
+            @if (data.RecentContent.Count == 0)
+            {
+                <p class="admin-empty">Chưa có nội dung.</p>
+            }
+            else
+            {
+                <div class="admin-recent">
+                    @foreach (var item in data.RecentContent)
+                    {
+                        <a class="admin-recent-row" href="/admin/noi-dung/@item.Id">
+                            <span class="admin-recent-icon"><AdminIcon Name="document" /></span>
+                            <span class="admin-recent-title">
+                                <strong>@item.Title</strong>
+                                <small>@AdminLabels.ContentKind(item.Kind) · @item.UpdatedAt.ToString("dd/MM/yyyy")</small>
+                            </span>
+                            <AdminStatus Published="@item.IsPublished" />
+                        </a>
+                    }
+                </div>
+            }
+        </section>
+
+        <section class="admin-card admin-shortcuts">
+            <div class="admin-card-header">
+                <div><h2>Thao tác nhanh</h2><p>Mở trực tiếp công cụ cần dùng.</p></div>
+            </div>
+            <a href="/admin/noi-dung/tao-moi"><span class="admin-shortcut-icon"><AdminIcon Name="edit" /></span><span><strong>Soạn nội dung</strong><small>Tạo trang hoặc bài viết mới</small></span><AdminIcon Name="arrow" /></a>
+            <a href="/admin/san-pham/tao-moi"><span class="admin-shortcut-icon"><AdminIcon Name="package" /></span><span><strong>Thêm sản phẩm</strong><small>Bổ sung danh mục thiết bị y tế</small></span><AdminIcon Name="arrow" /></a>
+            <a href="/admin/thu-vien"><span class="admin-shortcut-icon"><AdminIcon Name="upload" /></span><span><strong>Tải ảnh lên</strong><small>Quản lý hình ảnh dùng trên website</small></span><AdminIcon Name="arrow" /></a>
+            <a href="/admin/cai-dat"><span class="admin-shortcut-icon"><AdminIcon Name="settings" /></span><span><strong>Cập nhật thông tin</strong><small>Điện thoại, email và địa chỉ</small></span><AdminIcon Name="arrow" /></a>
+        </section>
+    </div>
+}
+
+@code {
+    private DashboardStats? stats;
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            stats = await DashboardService.GetAsync();
+        }
+        catch (CmsException exception)
+        {
+            error = exception.Message;
+        }
+    }
+}

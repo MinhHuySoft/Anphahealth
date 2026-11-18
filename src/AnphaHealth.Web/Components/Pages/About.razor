@@ -1,6 +1,131 @@
 @page "/gioi-thieu"
-@inject ContentStore Store
-<PageTitle>Giới thiệu — Anpha Health</PageTitle>
-<PageHero Eyebrow="Giới thiệu" Title="Tận tâm với y khoa. Trách nhiệm với cộng đồng." Description="Hành trình xây dựng niềm tin từ năm 2009." />
-<section class="section"><div class="container about-grid"><div class="about-copy"><span class="eyebrow">CÂU CHUYỆN ANPHA</span><h2>Mỗi giải pháp y khoa,<br />một giá trị được trao.</h2><p class="lead">Công ty TNHH Thương Mại TBYT An Pha chuyên nhập khẩu và phân phối máy móc, vật tư, thiết bị y tế tại Việt Nam.</p><p>Thành lập từ năm 2009, An Pha khởi sự với các vật tư và thiết bị y tế chuyên dụng trong lĩnh vực thẩm mỹ. Cuối năm 2014, công ty tiếp tục mở rộng phân phối vật tư y tế kỹ thuật cao từ các thương hiệu trên thế giới.</p><a class="button button-navy" href="/san-pham">Khám phá lĩnh vực phân phối <Icon Name="arrow" /></a></div><div class="about-visual"><img src="@Store.Asset("banner-gt.png")" alt="Thiết bị và công nghệ y khoa" /><div class="since-card"><strong>2009</strong><span>Khởi đầu hành trình<br />Anpha Health</span></div></div></div></section>
-<section class="section section-tint"><div class="container"><span class="eyebrow">NỀN TẢNG PHÁT TRIỂN</span><h2>Giá trị định hướng Anpha.</h2><div class="values-grid"><article><Icon Name="shield" /><h3>Tầm nhìn</h3><p>Trở thành hình mẫu chuẩn mực trong chăm sóc sức khỏe cộng đồng thông qua hợp tác lâu dài và toàn diện với giới y khoa.</p></article><article><Icon Name="heart" /><h3>Sứ mệnh</h3><p>Phân phối vật tư y khoa tiên tiến, hợp tác với y bác sĩ tận tâm phục vụ bệnh nhân bằng chất lượng tốt với chi phí phù hợp.</p></article><article><Icon Name="cross" /><h3>Văn hóa</h3><p>Tôn trọng và phát huy năng lực từng cá nhân. Trung thực, độc lập, uy tín, học hỏi và sáng tạo.</p></article><article><Icon Name="pulse" /><h3>Giá trị</h3><p>Trách nhiệm với cộng đồng. Khách hàng là trọng tâm. Độc lập, sáng tạo, linh hoạt và hiệu quả.</p></article></div></div></section>
+@inject IPublicWebsiteService Website
+@inject NavigationManager Navigation
+
+@if (page is { } about && document is { } profile)
+{
+    var pageTitle = about.Title == "Giới thiệu" ? "Về Anpha Health" : about.Title;
+
+    <PageTitle>@pageTitle — Anpha Health</PageTitle>
+
+    <section class="about-hero" aria-labelledby="about-title">
+        <div class="container about-hero-inner">
+            <div class="about-hero-content">
+                <nav class="about-breadcrumb" aria-label="Đường dẫn">
+                    <a href="/">Trang chủ</a>
+                    <span aria-hidden="true">/</span>
+                    <span aria-current="page">Giới thiệu</span>
+                </nav>
+                <h1 id="about-title">@pageTitle</h1>
+                <p>@(string.IsNullOrWhiteSpace(about.Summary)
+                        ? "Nhập khẩu và phân phối thiết bị, vật tư y tế tại Việt Nam."
+                        : about.Summary)</p>
+                <a class="button about-hero-action" href="@(specialties.Count > 0 ? "/gioi-thieu#linh-vuc-phan-phoi" : "/san-pham")">
+                    Khám phá lĩnh vực phân phối <Icon Name="arrow" />
+                </a>
+            </div>
+        </div>
+        <img class="about-cover" src="@(about.FeaturedImage ?? Website.Asset(AboutDocument.DefaultCover))" alt="" fetchpriority="high" />
+    </section>
+
+    @if (!string.IsNullOrWhiteSpace(profile.Introduction))
+    {
+        <section class="about-section" aria-labelledby="about-story-title">
+            <div class="container about-story">
+                <div class="about-story-heading">
+                    <h2 id="about-story-title">Hành trình phát triển</h2>
+                    @if (profile.HasFoundingYear || profile.HasExpansionYear)
+                    {
+                        <dl class="about-milestones">
+                            @if (profile.HasFoundingYear)
+                            {
+                                <div><dt>2009</dt><dd>Thành lập Anpha Health</dd></div>
+                            }
+                            @if (profile.HasExpansionYear)
+                            {
+                                <div><dt>2014</dt><dd>Mở rộng danh mục vật tư y tế</dd></div>
+                            }
+                        </dl>
+                    }
+                </div>
+                <div class="about-story-copy prose">@((MarkupString)profile.Introduction)</div>
+            </div>
+        </section>
+    }
+
+    @if (specialties.Count > 0)
+    {
+        <section id="linh-vuc-phan-phoi" class="about-section about-specialties" aria-labelledby="about-specialties-title">
+            <div class="container">
+                <div class="about-section-heading">
+                    <h2 id="about-specialties-title">Lĩnh vực phân phối</h2>
+                    <a class="text-link" href="/san-pham">Xem danh mục sản phẩm <Icon Name="arrow" /></a>
+                </div>
+                <div class="about-specialty-grid">
+                    @foreach (var specialty in specialties)
+                    {
+                        <a href="/san-pham/@specialty.Slug" class="about-specialty-card">
+                            <span class="about-specialty-icon"><Icon Name="@specialty.Icon" /></span>
+                            <h3>@specialty.Category</h3>
+                            <span class="about-specialty-brand">@specialty.Brand</span>
+                            <span class="about-specialty-arrow"><Icon Name="arrow" /></span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    @if (profile.Sections.Count > 0)
+    {
+        <section class="about-section" aria-labelledby="about-values-title">
+            <div class="container">
+                <div class="about-section-heading"><h2 id="about-values-title">Định hướng & giá trị</h2></div>
+                <div class="about-values-grid">
+                    @foreach (var item in profile.Sections)
+                    {
+                        <div class="about-value-card">
+                            <h3>@item.Title</h3>
+                            <div class="about-value-copy prose">@((MarkupString)item.Html)</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <div class="container about-contact-wrap">
+        <section class="about-contact" aria-labelledby="about-contact-title">
+            <div>
+                <h2 id="about-contact-title">Hợp tác cùng Anpha Health</h2>
+                <p>Trao đổi với chúng tôi về thiết bị, vật tư y tế và nhu cầu phân phối.</p>
+            </div>
+            <a class="button button-white" href="/lien-he">Liên hệ với Anpha <Icon Name="arrow" /></a>
+        </section>
+    </div>
+}
+
+@code {
+    private PublicPage? page;
+    private AboutDocument? document;
+    private IReadOnlyList<PublicProduct> specialties = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var pageTask = Website.GetPageAsync("gioi-thieu", "Page");
+        var productsTask = Website.ListProductsAsync();
+        await Task.WhenAll(pageTask, productsTask);
+
+        page = await pageTask;
+        if (page is null)
+        {
+            Navigation.NotFound();
+            return;
+        }
+
+        specialties = (await productsTask).Where(product => product.Primary)
+            .DistinctBy(product => product.Category)
+            .ToArray();
+        document = AboutDocument.Read(page.Html, specialties.Count > 0);
+    }
+}

@@ -1,0 +1,149 @@
+@namespace AnphaHealth.Web.Components.Admin
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+@inject ILogger<TiptapEditor> Logger
+
+<div class="cms-tiptap" @ref="_root" data-ready="false">
+    <div class="cms-tiptap-toolbar" role="group" aria-label="Định dạng nội dung">
+        <div class="cms-tiptap-tools">
+            <select data-block-format aria-label="Kiểu đoạn văn">
+                <option value="paragraph">Đoạn văn</option>
+                <option value="heading2">Tiêu đề 2</option>
+                <option value="heading3">Tiêu đề 3</option>
+                <option value="heading4">Tiêu đề 4</option>
+            </select>
+        </div>
+        <div class="cms-tiptap-tools">
+            <button type="button" data-command="bold" aria-label="In đậm" title="In đậm (Ctrl+B)"><strong>B</strong></button>
+            <button type="button" data-command="italic" aria-label="In nghiêng" title="In nghiêng (Ctrl+I)"><em>I</em></button>
+            <button type="button" data-command="underline" aria-label="Gạch dưới" title="Gạch dưới (Ctrl+U)"><u>U</u></button>
+            <button type="button" data-command="strike" aria-label="Gạch ngang" title="Gạch ngang"><s>S</s></button>
+        </div>
+        <div class="cms-tiptap-tools">
+            <button type="button" data-command="bulletList" aria-label="Danh sách dấu đầu dòng" title="Danh sách dấu đầu dòng">≡</button>
+            <button type="button" data-command="orderedList" aria-label="Danh sách đánh số" title="Danh sách đánh số">1≡</button>
+            <button type="button" data-command="blockquote" aria-label="Trích dẫn" title="Trích dẫn">❝</button>
+        </div>
+        <div class="cms-tiptap-tools">
+            <button type="button" class="cms-tiptap-text-tool" data-command="link" aria-label="Liên kết" title="Chèn hoặc sửa liên kết">Liên kết</button>
+            <button type="button" class="cms-tiptap-text-tool" data-command="image" aria-label="Chèn ảnh" title="Chèn ảnh">Ảnh</button>
+            <button type="button" class="cms-tiptap-text-tool" data-command="table" aria-label="Chèn bảng" title="Chèn bảng 3 cột và 3 hàng">Bảng</button>
+        </div>
+        <div class="cms-tiptap-tools">
+            <button type="button" data-command="undo" aria-label="Hoàn tác" title="Hoàn tác (Ctrl+Z)">↶</button>
+            <button type="button" data-command="redo" aria-label="Làm lại" title="Làm lại">↷</button>
+        </div>
+    </div>
+
+    <div class="cms-tiptap-table-tools" data-table-tools hidden>
+        <span>Bảng</span>
+        <button type="button" data-command="addRow">Thêm hàng</button>
+        <button type="button" data-command="addColumn">Thêm cột</button>
+        <button type="button" data-command="deleteRow">Xóa hàng</button>
+        <button type="button" data-command="deleteColumn">Xóa cột</button>
+        <button type="button" data-command="deleteTable">Xóa bảng</button>
+    </div>
+
+    <div class="cms-tiptap-loading" role="status">@(_loadFailed ? "Không mở được trình soạn thảo. Hãy tải lại trang." : "Đang mở trình soạn thảo…")</div>
+    <div class="cms-tiptap-edit-surface" data-editor-content></div>
+    <div class="cms-tiptap-footer" aria-hidden="true" data-editor-word-count>0 từ</div>
+
+    <dialog class="cms-tiptap-dialog" data-editor-dialog aria-labelledby="@_dialogTitleId">
+        <h3 id="@_dialogTitleId" data-dialog-title></h3>
+        <label class="cms-tiptap-dialog-field">
+            <span data-url-label>Địa chỉ URL</span>
+            <input data-dialog-url type="text" inputmode="url" autocomplete="url" spellcheck="false" autofocus />
+        </label>
+        <label class="cms-tiptap-dialog-field" data-detail-field>
+            <span data-detail-label></span>
+            <input data-dialog-detail type="text" autocomplete="off" />
+        </label>
+        <p class="cms-tiptap-dialog-error" data-dialog-error role="alert" hidden></p>
+        <div class="cms-tiptap-dialog-actions">
+            <button type="button" data-dialog-remove hidden>Gỡ liên kết</button>
+            <button type="button" data-dialog-cancel>Hủy</button>
+            <button type="button" class="cms-tiptap-confirm" data-dialog-confirm>Lưu</button>
+        </div>
+    </dialog>
+</div>
+
+@code {
+    private const long MaximumContentBytes = 4 * 1024 * 1024;
+    private readonly string _dialogTitleId = $"tiptap-dialog-{Guid.NewGuid():N}";
+    private ElementReference _root;
+    private IJSObjectReference? _module;
+    private bool _ready;
+    private bool _loadFailed;
+    private bool _disposed;
+
+    [Parameter] public string? InitialHtml { get; set; }
+    [Parameter] public string Label { get; set; } = "Nội dung chi tiết";
+    [Parameter] public string Placeholder { get; set; } = "Bắt đầu viết nội dung…";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        try
+        {
+            var module = await JS.InvokeAsync<IJSObjectReference>("import", "./admin/tiptap.js");
+            if (_disposed)
+            {
+                await module.DisposeAsync();
+                return;
+            }
+
+            _module = module;
+            await module.InvokeVoidAsync("mount", _root, InitialHtml ?? "", Label, Placeholder);
+            _ready = true;
+        }
+        catch (JSDisconnectedException)
+        {
+            // The server circuit ended during navigation.
+        }
+        catch (JSException exception)
+        {
+            Logger.LogWarning(exception, "Could not load the CMS Tiptap editor");
+            _loadFailed = true;
+            StateHasChanged();
+        }
+    }
+
+    public async ValueTask<string> GetHtmlAsync()
+    {
+        if (!_ready || _module is null)
+        {
+            return InitialHtml ?? "";
+        }
+
+        await using var reference = await _module.InvokeAsync<IJSStreamReference>("getHtmlStream", _root);
+        await using var stream = await reference.OpenReadStreamAsync(MaximumContentBytes);
+        using var reader = new StreamReader(stream);
+        return await reader.ReadToEndAsync();
+    }
+
+    public ValueTask InsertImageAsync(string source, string alt = "") => _ready && _module is not null
+        ? _module.InvokeVoidAsync("insertImage", _root, source, alt)
+        : ValueTask.CompletedTask;
+
+    public async ValueTask DisposeAsync()
+    {
+        _disposed = true;
+        if (_module is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await _module.DisposeAsync();
+        }
+        catch (JSDisconnectedException)
+        {
+            // The client already disconnected, so its module reference is gone.
+        }
+    }
+}

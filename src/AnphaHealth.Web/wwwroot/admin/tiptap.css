@@ -1,0 +1,319 @@
+.cms-tiptap {
+    --editor-text: #172b47;
+    --editor-muted: #68788e;
+    --editor-border: #dfe7ee;
+    --editor-background: #f6f8fb;
+    --editor-accent: #087f73;
+    --editor-accent-soft: #e0f4ef;
+    min-width: 0;
+    color: var(--editor-text);
+    border: 1px solid var(--editor-border);
+    border-radius: 13px;
+    background: #fff;
+    overflow: clip;
+}
+
+.cms-tiptap :is([hidden]),
+.cms-tiptap[data-ready="false"] :is(.cms-tiptap-toolbar, .cms-tiptap-edit-surface, .cms-tiptap-footer),
+.cms-tiptap[data-ready="true"] .cms-tiptap-loading {
+    display: none;
+}
+
+.cms-tiptap-loading {
+    padding: 42px 24px;
+    color: var(--editor-muted);
+    font-size: .875rem;
+}
+
+.cms-tiptap-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    background: var(--editor-background);
+    border-bottom: 1px solid var(--editor-border);
+}
+
+.cms-tiptap-tools {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding-right: 6px;
+    border-right: 1px solid var(--editor-border);
+}
+
+.cms-tiptap-tools:last-child {
+    padding-right: 0;
+    border: 0;
+}
+
+.cms-tiptap-toolbar :is(button, select),
+.cms-tiptap-table-tools button {
+    box-sizing: border-box;
+    height: 34px;
+    min-width: 34px;
+    margin: 0;
+    padding: 3px 7px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--editor-text);
+    font-size: .875rem;
+    line-height: 1.25;
+}
+
+.cms-tiptap-toolbar select {
+    width: auto;
+    padding-inline: 8px;
+    font-weight: 600;
+}
+
+.cms-tiptap-toolbar .cms-tiptap-text-tool,
+.cms-tiptap-table-tools button {
+    padding-inline: 9px;
+    font-size: .78rem;
+    font-weight: 600;
+}
+
+.cms-tiptap-toolbar button:disabled {
+    opacity: .39;
+    cursor: default;
+}
+
+.cms-tiptap-toolbar button:not(:disabled):hover,
+.cms-tiptap-toolbar button[aria-pressed="true"],
+.cms-tiptap-table-tools button:hover {
+    color: var(--editor-accent);
+    background: var(--editor-accent-soft);
+}
+
+.cms-tiptap-table-tools {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px 12px;
+    border-bottom: 1px solid var(--editor-border);
+    background: var(--editor-background);
+    font-size: .76rem;
+}
+
+.cms-tiptap-table-tools > span {
+    margin-inline: 5px;
+    color: var(--editor-muted);
+    font-weight: 700;
+}
+
+.cms-tiptap-table-tools button {
+    height: 29px;
+}
+
+.cms-tiptap-edit-surface {
+    max-height: min(66vh, 720px);
+    overflow: auto;
+    overscroll-behavior: contain;
+}
+
+.cms-tiptap .cms-tiptap-prose {
+    min-height: 260px;
+    padding: 23px 25px 32px;
+    outline: none;
+    color: var(--editor-text);
+    font-size: 1rem;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.cms-tiptap:focus-within {
+    border-color: #72b9af;
+}
+
+.cms-tiptap-prose :is(p, ul, ol, pre) {
+    margin: 0 0 .75rem;
+}
+
+.cms-tiptap-prose :is(h1, h2, h3, h4, h5, h6) {
+    margin: 1.35em 0 .45em;
+    color: var(--editor-text);
+    line-height: 1.3;
+}
+
+.cms-tiptap-prose h1 { font-size: 1.8rem; }
+.cms-tiptap-prose h2 { font-size: 1.5rem; }
+.cms-tiptap-prose h3 { font-size: 1.25rem; }
+.cms-tiptap-prose :is(h4, h5, h6) { font-size: 1.08rem; }
+
+.cms-tiptap-prose > :first-child {
+    margin-top: 0;
+}
+
+.cms-tiptap-prose > :last-child,
+.cms-tiptap-prose li > p:last-child,
+.cms-tiptap-prose td > p:last-child,
+.cms-tiptap-prose th > p:last-child {
+    margin-bottom: 0;
+}
+
+.cms-tiptap-prose p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    color: var(--editor-muted);
+    pointer-events: none;
+}
+
+.cms-tiptap-prose ul { list-style: disc; }
+.cms-tiptap-prose ol { list-style: decimal; }
+.cms-tiptap-prose :is(ul, ol) { padding-inline-start: 1.5rem; }
+
+.cms-tiptap-prose a {
+    color: var(--editor-accent);
+    text-decoration: underline;
+}
+
+.cms-tiptap-prose img {
+    display: inline-block;
+    max-width: 100%;
+    max-height: 420px;
+    height: auto;
+    object-fit: contain;
+    vertical-align: middle;
+    border-radius: 5px;
+}
+
+.cms-tiptap-prose blockquote {
+    margin: .75rem 0;
+    padding: 3px 14px;
+    color: var(--editor-muted);
+    border-inline-start: 3px solid #72b9af;
+}
+
+.cms-tiptap-prose pre {
+    padding: 12px;
+    overflow: auto;
+    border-radius: 5px;
+    background: var(--editor-background);
+}
+
+.cms-tiptap-prose table {
+    width: 100%;
+    margin-block: 1rem;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.cms-tiptap-prose :is(td, th) {
+    position: relative;
+    min-width: 1em;
+    padding: 5px 8px;
+    border: 1px solid var(--editor-border);
+    vertical-align: top;
+    text-align: start;
+}
+
+.cms-tiptap-prose th { background: var(--editor-background); }
+
+.cms-tiptap-prose .selectedCell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: #158b8029;
+}
+
+.cms-tiptap-prose .ProseMirror-selectednode {
+    outline: 2px solid var(--editor-accent);
+    outline-offset: 2px;
+}
+
+.cms-tiptap-footer {
+    padding: 7px 15px;
+    border-top: 1px solid var(--editor-border);
+    color: var(--editor-muted);
+    font-size: .75rem;
+    text-align: end;
+}
+
+.cms-tiptap-dialog {
+    width: min(100% - 32px, 430px);
+    padding: 24px;
+    border: 1px solid var(--editor-border);
+    border-radius: 16px;
+    background: #fff;
+    color: var(--editor-text);
+    box-shadow: 0 24px 80px #0c21374d;
+}
+
+.cms-tiptap-dialog::backdrop { background: #0c213767; }
+
+.cms-tiptap-dialog h3 {
+    margin: 0 0 18px;
+    color: var(--editor-text);
+    font-size: 1.2rem;
+}
+
+.cms-tiptap-dialog .cms-tiptap-dialog-field {
+    display: block;
+    margin: 0 0 14px;
+    color: var(--editor-text);
+    font-size: .84rem;
+    font-weight: 600;
+}
+
+.cms-tiptap-dialog .cms-tiptap-dialog-field[hidden] { display: none; }
+
+.cms-tiptap-dialog .cms-tiptap-dialog-field input {
+    width: 100%;
+    min-height: 40px;
+    margin-top: 5px;
+    padding: 8px 10px;
+    border: 1px solid var(--editor-border);
+    border-radius: 7px;
+    background: #fff;
+    color: var(--editor-text);
+    font: inherit;
+    font-weight: 400;
+}
+
+.cms-tiptap-dialog .cms-tiptap-dialog-error {
+    margin: 0 0 12px;
+    color: #b82747;
+    font-size: .85rem;
+}
+
+.cms-tiptap-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.cms-tiptap-dialog-actions button {
+    min-height: 38px;
+    padding: 5px 12px;
+    border: 1px solid var(--editor-border);
+    border-radius: 7px;
+    background: var(--editor-background);
+    color: var(--editor-text);
+    font-size: .83rem;
+    font-weight: 600;
+}
+
+.cms-tiptap-dialog-actions button[data-dialog-remove] {
+    margin-right: auto;
+    color: #b82747;
+}
+
+.cms-tiptap-dialog-actions .cms-tiptap-confirm {
+    border-color: var(--editor-accent);
+    background: var(--editor-accent);
+    color: #fff;
+}
+
+@media (max-width: 620px) {
+    .cms-tiptap-toolbar { padding: 8px; }
+    .cms-tiptap-tools { padding-right: 4px; }
+    .cms-tiptap .cms-tiptap-prose { padding: 18px 15px 24px; }
+}

@@ -1,0 +1,73 @@
+@inherits LayoutComponentBase
+
+<HeadContent>
+    <link rel="stylesheet" href="/admin.css" />
+    <link rel="stylesheet" href="/admin/tiptap.css" />
+    <meta name="robots" content="noindex, nofollow" />
+</HeadContent>
+
+<div class="admin-shell">
+    <a class="admin-skip" href="#admin-content">Chuyển đến nội dung</a>
+    @if (menuOpen)
+    {
+        <button type="button" class="admin-mobile-backdrop" aria-label="Đóng điều hướng" @onclick="CloseMenu"></button>
+    }
+    <aside id="admin-sidebar" class="admin-sidebar @(menuOpen ? "is-open" : "")" aria-label="Thanh bên quản trị">
+        <a class="admin-brand" href="/admin" @onclick="CloseMenu">
+            <span class="admin-brand-mark"><AdminIcon Name="activity" /></span>
+            <span>Anpha Health<small>Quản trị website</small></span>
+        </a>
+
+        <div class="admin-navigation">
+            <p class="admin-nav-label">Tổng quan</p>
+            <nav aria-label="Tổng quan">
+                <NavLink href="/admin" Match="NavLinkMatch.All" @onclick="CloseMenu"><AdminIcon Name="dashboard" /> Bảng điều khiển</NavLink>
+            </nav>
+            <p class="admin-nav-label">Quản lý website</p>
+            <nav aria-label="Quản lý website">
+                <NavLink href="/admin/noi-dung" @onclick="CloseMenu"><AdminIcon Name="document" /> Nội dung</NavLink>
+                <NavLink href="/admin/san-pham" @onclick="CloseMenu"><AdminIcon Name="package" /> Sản phẩm</NavLink>
+                <NavLink href="/admin/thu-vien" @onclick="CloseMenu"><AdminIcon Name="image" /> Thư viện ảnh</NavLink>
+                <NavLink href="/admin/yeu-cau" @onclick="CloseMenu"><AdminIcon Name="mail" /> Yêu cầu tư vấn</NavLink>
+                <NavLink href="/admin/cai-dat" @onclick="CloseMenu"><AdminIcon Name="settings" /> Cài đặt</NavLink>
+            </nav>
+        </div>
+
+        <div class="admin-sidebar-bottom">
+            <a href="/" target="_blank" rel="noopener">
+                <AdminIcon Name="globe" /> Xem website <span><AdminIcon Name="external" /></span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="admin-workspace">
+        <header class="admin-topbar">
+            <div class="admin-topbar-left">
+                <button class="admin-icon-button admin-menu-button" type="button" aria-label="Mở điều hướng" aria-expanded="@(menuOpen ? "true" : "false")" aria-controls="admin-sidebar" @onclick="ToggleMenu">
+                    <AdminIcon Name="menu" />
+                </button>
+                <a href="/admin">Quản trị</a>
+                <span aria-hidden="true">/</span>
+                <strong>Anpha Health</strong>
+            </div>
+            <div class="admin-topbar-right">
+                <a href="/" target="_blank" rel="noopener" class="admin-topbar-site"><AdminIcon Name="external" /> Xem website</a>
+                <form action="/admin/logout" method="post" data-enhance="false">
+                    <AntiforgeryToken />
+                    <button class="admin-icon-button" type="submit" aria-label="Đăng xuất" title="Đăng xuất"><AdminIcon Name="logout" /></button>
+                </form>
+                <span class="admin-user" title="Quản trị viên Anpha Health">AP</span>
+            </div>
+        </header>
+        <main id="admin-content" class="admin-main" tabindex="-1">
+            @Body
+        </main>
+    </div>
+</div>
+
+@code {
+    private bool menuOpen;
+
+    private void ToggleMenu() => menuOpen = !menuOpen;
+    private void CloseMenu() => menuOpen = false;
+}

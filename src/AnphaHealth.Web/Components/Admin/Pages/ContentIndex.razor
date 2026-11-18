@@ -1,0 +1,107 @@
+@page "/admin/noi-dung"
+@inject IContentService Content
+
+<PageTitle>Nội dung | Anpha Health</PageTitle>
+
+<AdminPageHeader Title="Nội dung" Description="Quản lý trang, bài viết và dữ liệu chuyển từ website cũ.">
+    <Actions>
+        <a class="admin-button admin-button-primary" href="/admin/noi-dung/tao-moi"><AdminIcon Name="plus" /> Tạo nội dung</a>
+    </Actions>
+</AdminPageHeader>
+
+<section class="admin-card" aria-label="Danh sách nội dung">
+    <form class="admin-filters" @onsubmit="SearchAsync" @onsubmit:preventDefault>
+        <label class="admin-search">
+            <span class="admin-sr-only">Tìm nội dung</span>
+            <AdminIcon Name="search" />
+            <input type="search" @bind="search" placeholder="Tìm tiêu đề hoặc đường dẫn…" />
+        </label>
+        <label>
+            <span class="admin-sr-only">Loại nội dung</span>
+            <select @bind="kind" @bind:after="SearchAsync">
+                <option value="">Tất cả loại nội dung</option>
+                <option value="Page">Trang</option>
+                <option value="Article">Bài viết</option>
+                <option value="Product">Sản phẩm</option>
+                <option value="Archive">Bản lưu</option>
+            </select>
+        </label>
+        <label>
+            <span class="admin-sr-only">Trạng thái xuất bản</span>
+            <select @bind="status" @bind:after="SearchAsync">
+                <option value="">Tất cả trạng thái</option>
+                <option value="published">Đã xuất bản</option>
+                <option value="draft">Bản nháp</option>
+            </select>
+        </label>
+        <button class="admin-button admin-button-secondary" type="submit">Tìm kiếm</button>
+    </form>
+
+    <AdminAlert Message="@error" IsError="true" />
+    @if (loading)
+    {
+        <p class="admin-loading" role="status">Đang tải nội dung…</p>
+    }
+    else if (result is { Items.Count: > 0 } data)
+    {
+        <div class="admin-table-scroll">
+            <table class="admin-table">
+                <thead><tr><th>Tiêu đề</th><th>Loại</th><th>Trạng thái</th><th>Cập nhật</th><th><span class="admin-sr-only">Hành động</span></th></tr></thead>
+                <tbody>
+                    @foreach (var item in data.Items)
+                    {
+                        <tr>
+                            <td><a class="admin-table-title" href="/admin/noi-dung/@item.Id">@item.Title</a><small class="admin-table-subtitle">/@item.Slug</small></td>
+                            <td><span class="admin-type">@AdminLabels.ContentKind(item.Kind)</span></td>
+                            <td><AdminStatus Published="@item.IsPublished" /></td>
+                            <td class="admin-nowrap">@item.UpdatedAt.ToString("dd/MM/yyyy")</td>
+                            <td class="admin-table-action"><a class="admin-icon-button" href="/admin/noi-dung/@item.Id" aria-label="Mở @item.Title"><AdminIcon Name="edit" /></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <AdminPagination Total="@data.TotalCount" Page="@data.Page" PageSize="@data.PageSize" PageChanged="LoadAsync" />
+    }
+    else if (error is null)
+    {
+        <p class="admin-empty">Không tìm thấy nội dung phù hợp.</p>
+    }
+</section>
+
+@code {
+    private string search = "";
+    private string kind = "";
+    private string status = "";
+    private string? error;
+    private bool loading = true;
+    private PagedResult<ContentListItem>? result;
+    private int loadVersion;
+
+    protected override Task OnInitializedAsync() => LoadAsync(1);
+    private Task SearchAsync() => LoadAsync(1);
+
+    private async Task LoadAsync(int page)
+    {
+        var request = ++loadVersion;
+        loading = true;
+        error = null;
+        bool? published = status switch { "published" => true, "draft" => false, _ => null };
+        try
+        {
+            var data = await Content.ListAsync(new CmsQuery(Search: search, Kind: kind, IsPublished: published, Page: page));
+            if (request == loadVersion)
+                result = data;
+        }
+        catch (CmsException exception)
+        {
+            if (request == loadVersion)
+                error = exception.Message;
+        }
+        finally
+        {
+            if (request == loadVersion)
+                loading = false;
+        }
+    }
+}

@@ -1,0 +1,86 @@
+@page "/admin/cai-dat"
+@inject ISiteSettingsService Settings
+
+<PageTitle>Cài đặt website | Anpha Health</PageTitle>
+
+@if (model is { } item)
+{
+    <EditForm Model="@item" OnValidSubmit="SaveAsync" FormName="cms-settings">
+        <DataAnnotationsValidator />
+        <AdminPageHeader Title="Cài đặt website" Description="Thông tin thương hiệu và liên hệ dùng trên các trang công khai.">
+            <Actions>
+                <button class="admin-button admin-button-primary" type="submit" disabled="@saving"><AdminIcon Name="check" /> @(saving ? "Đang lưu…" : "Lưu cài đặt")</button>
+            </Actions>
+        </AdminPageHeader>
+        <AdminAlert Message="@notice" />
+        <AdminAlert Message="@error" IsError="true" />
+        <div class="admin-settings-grid">
+            <section class="admin-card admin-form-card">
+                <h2>Thương hiệu</h2>
+                <label class="admin-field"><span>Tên website</span><InputText @bind-Value="item.SiteName" maxlength="160" /><ValidationMessage For="() => item.SiteName" /></label>
+                <label class="admin-field"><span>Thông điệp</span><InputTextArea @bind-Value="item.Tagline" rows="3" maxlength="250" /><ValidationMessage For="() => item.Tagline" /></label>
+            </section>
+            <section class="admin-card admin-form-card">
+                <h2>Thông tin liên hệ</h2>
+                <label class="admin-field"><span>Email</span><InputText type="email" @bind-Value="item.Email" maxlength="254" /><ValidationMessage For="() => item.Email" /></label>
+                <div class="admin-fields-grid">
+                    <label class="admin-field"><span>Điện thoại</span><InputText type="tel" @bind-Value="item.Phone" maxlength="40" /><ValidationMessage For="() => item.Phone" /></label>
+                    <label class="admin-field"><span>Fax</span><InputText type="tel" @bind-Value="item.Fax" maxlength="40" /><ValidationMessage For="() => item.Fax" /></label>
+                </div>
+                <label class="admin-field"><span>Địa chỉ công ty</span><InputTextArea @bind-Value="item.Address" rows="2" maxlength="500" /><ValidationMessage For="() => item.Address" /></label>
+                <label class="admin-field"><span>Địa chỉ văn phòng</span><InputTextArea @bind-Value="item.OfficeAddress" rows="2" maxlength="500" /><ValidationMessage For="() => item.OfficeAddress" /></label>
+            </section>
+        </div>
+    </EditForm>
+}
+else
+{
+    <AdminPageHeader Title="Cài đặt website" />
+    <AdminAlert Message="@error" IsError="true" />
+    @if (error is null)
+    {
+        <p class="admin-loading" role="status">Đang tải cài đặt…</p>
+    }
+}
+
+@code {
+    private SiteSettingsInput? model;
+    private string? error;
+    private string? notice;
+    private bool saving;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            model = await Settings.GetAsync();
+        }
+        catch (CmsException exception)
+        {
+            error = exception.Message;
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        if (saving || model is not { } item)
+            return;
+
+        saving = true;
+        notice = null;
+        error = null;
+        try
+        {
+            await Settings.SaveAsync(item);
+            notice = "Đã lưu cài đặt website.";
+        }
+        catch (CmsException exception)
+        {
+            error = exception.Message;
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+}

@@ -1,0 +1,25 @@
+<div class="admin-page-header">
+    <div>
+        @if (BackHref is not null)
+        {
+            <a href="@BackHref" class="admin-back"><AdminIcon Name="back" /> @BackLabel</a>
+        }
+        <h1>@Title</h1>
+        @if (Description is not null)
+        {
+            <p>@Description</p>
+        }
+    </div>
+    @if (Actions is not null)
+    {
+        <div class="admin-page-actions">@Actions</div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public string? BackHref { get; set; }
+    [Parameter] public string BackLabel { get; set; } = "Quay lại";
+    [Parameter] public RenderFragment? Actions { get; set; }
+}

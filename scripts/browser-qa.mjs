@@ -9,6 +9,7 @@ const executablePath=installed?path.join(cache,installed,'chrome-win64','chrome.
 const browser=await chromium.launch({headless:true,executablePath});
 const pages=[['home','/'],['about','/gioi-thieu'],['products','/san-pham'],['product-detail','/san-pham/fresenious-medicalcare-fmc'],['news','/tin-tuc'],['article','/tin-tuc/tim-hieu-ve-tui-nang-nguc'],['activities','/hoat-dong'],['careers','/tuyen-dung'],['contact','/lien-he'],['proposal','/de-xuat']];
 const results=[],errors=[],networkErrors=[],external=[];
+fs.mkdirSync('RECON/screenshots', {recursive:true});
 try{
 for(const width of [1440,768,390]){
  const page=await browser.newPage({viewport:{width,height:1000},reducedMotion:'reduce'});
@@ -46,8 +47,9 @@ await page.waitForTimeout(200);assert.equal(await page.locator('.catalog-product
 await page.goto(base+'/san-pham/c-i-d',{waitUntil:'networkidle'});await page.getByRole('tab',{name:'Hình ảnh sản phẩm'}).click();await page.locator('.image-gallery').waitFor();assert.ok(await page.locator('.image-gallery img').count()>0);
 await page.goto(base+'/lien-he?sanpham=c-i-d',{waitUntil:'networkidle'});
 assert.equal(await page.locator('select').inputValue(),'Can thiệp mạch');
-await page.getByRole('button',{name:'Xem trước yêu cầu'}).click();await page.waitForTimeout(150);assert.equal(await page.locator('.validation-message').count(),3);
-await page.getByPlaceholder('Họ và tên của bạn').fill('Khách xem demo');await page.getByPlaceholder('email@congty.vn').fill('demo@example.com');await page.getByPlaceholder('Chia sẻ nhu cầu của bạn...').fill('Tôi muốn tham khảo danh mục thiết bị.');await page.getByRole('button',{name:'Xem trước yêu cầu'}).click();await page.getByRole('status').waitFor();assert.ok((await page.getByRole('status').textContent()).includes('chưa được gửi'));await page.getByRole('button',{name:'Chỉnh sửa yêu cầu'}).click();assert.equal(await page.getByPlaceholder('Họ và tên của bạn').inputValue(),'Khách xem demo');
+await page.getByRole('button',{name:'Gửi yêu cầu',exact:true}).click();
+await page.locator('.validation-message').nth(2).waitFor();
+assert.equal(await page.locator('.validation-message').count(),3);
 await page.setViewportSize({width:390,height:844});await page.goto(base+'/',{waitUntil:'networkidle'});await page.getByRole('button',{name:'Mở menu'}).click();await page.locator('nav.main-nav a[href="/san-pham"]').click();await page.waitForURL(base+'/san-pham');assert.equal(await page.locator('nav.main-nav').evaluate(x=>getComputedStyle(x).display),'none');
 await page.close();
 const archive=JSON.parse(fs.readFileSync('data/anpha-content.json','utf8'));
@@ -55,6 +57,6 @@ const context=await browser.newContext();
 for(const item of archive){const response=await context.request.get(base+'/noi-dung/'+item.slug);assert.equal(response.status(),200,item.slug);const html=await response.text();assert.ok(!html.includes('An unhandled error has occurred'),item.slug);}
 await context.close();
 assert.equal(errors.length,0,JSON.stringify(errors));assert.equal(networkErrors.length,0,JSON.stringify(networkErrors));assert.equal(external.length,0,JSON.stringify([...new Set(external)]));
-fs.writeFileSync('RECON/clone-qa.json',JSON.stringify({passed:true,captures:results,interactionTests:['category filter','search','empty-state reset','product gallery tab','contact preselection','required validation','local-only form preview','form editing','mobile menu navigation'],archiveRoutes:archive.length,errors,networkErrors,externalRequests:external},null,2));
-console.log('All QA passed: 30 responsive captures, 9 interactions, '+archive.length+' archive routes.');
+fs.writeFileSync('RECON/clone-qa.json',JSON.stringify({passed:true,captures:results,interactionTests:['category filter','search','empty-state reset','product gallery tab','contact preselection','required validation','mobile menu navigation'],archiveRoutes:archive.length,errors,networkErrors,externalRequests:external},null,2));
+console.log('All QA passed: 30 responsive captures, 7 interactions, '+archive.length+' archive routes.');
 }catch(error){fs.writeFileSync('RECON/clone-qa.json',JSON.stringify({passed:false,error:String(error),captures:results,errors,networkErrors,externalRequests:[...new Set(external)]},null,2));throw error;}finally{await browser.close();}

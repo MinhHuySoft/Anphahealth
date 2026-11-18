@@ -1,0 +1,26 @@
+@if (Total > PageSize)
+{
+    <div class="admin-pagination">
+        <span>@Start–@End / @Total kết quả</span>
+        <div>
+            <button type="button" class="admin-icon-button" aria-label="Trang trước" disabled="@(Page == 1)" @onclick="() => PageChanged.InvokeAsync(Page - 1)">
+                <AdminIcon Name="left" />
+            </button>
+            <span>Trang @Page / @PageCount</span>
+            <button type="button" class="admin-icon-button" aria-label="Trang sau" disabled="@(Page >= PageCount)" @onclick="() => PageChanged.InvokeAsync(Page + 1)">
+                <AdminIcon Name="right" />
+            </button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int Total { get; set; }
+    [Parameter] public int Page { get; set; } = 1;
+    [Parameter] public int PageSize { get; set; } = 20;
+    [Parameter] public EventCallback<int> PageChanged { get; set; }
+
+    private int PageCount => (int)Math.Ceiling((double)Total / PageSize);
+    private int Start => (Page - 1) * PageSize + 1;
+    private int End => Math.Min(Page * PageSize, Total);
+}

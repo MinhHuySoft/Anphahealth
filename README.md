@@ -1,56 +1,53 @@
-# Anpha Health — bản demo Blazor
+# Anpha Health
 
-Giao diện trình khách, dùng nội dung công khai từ **anphahealth.vn** và hướng thiết kế **Chemlabs / 7oroof**. Mã giao diện được viết lại bằng Blazor, CSS riêng; ảnh và font lưu cục bộ.
+Website public và CMS dùng Blazor Web App (.NET 10), EF Core Database First và SQL Server. Nội dung bắt đầu từ bản crawl anphahealth.vn. CMS dùng Tiptap để soạn thảo trang, bài viết và mô tả sản phẩm.
 
-## Chạy demo
-
-Yêu cầu .NET SDK 10 (repo pin 10.0.201).
+## Chạy trên máy này
 
 ```powershell
 ./start-demo.ps1
 ```
 
-Mở http://127.0.0.1:5080. Trang `/de-xuat` có phạm vi demo, bảng ghép template và danh sách dữ liệu đã crawl.
+Website chạy ở http://127.0.0.1:5080. Mở http://127.0.0.1:5080/admin để vào CMS. Database `AnphaHealth` đã được tạo và nạp trên SQL Server `localhost` bằng Windows Authentication. Tài khoản quản trị cục bộ là `anpha-admin`. Mật khẩu ngẫu nhiên nằm trong `.local/cms-admin.txt`, được bỏ qua bởi Git.
+
+## Khởi tạo trên máy khác
+
+Cần .NET SDK 10, SQL Server, `sqlcmd` và PowerShell 7. Để nạp cả bản gốc, sao chép thư mục khảo sát `RECON` từ workspace hiện tại. Script cũng hỗ trợ checkout chỉ có JSON và media đã theo dõi trong Git.
 
 ```powershell
-dotnet build src/AnphaHealth.Web
-dotnet publish src/AnphaHealth.Web -c Release -o artifacts/publish
+pwsh -File ./database/Initialize-AnphaHealth.ps1
+$env:ASPNETCORE_ENVIRONMENT = 'Development'
+dotnet run --project src/AnphaHealth.Web --no-launch-profile -- --create-admin <ten-quan-tri>
+./start-demo.ps1
 ```
 
-## Cấu trúc
+Ứng dụng hỏi mật khẩu từ 12 ký tự và chỉ lưu hash trong SQL Server. Đặt `ConnectionStrings__AnphaHealth` khi dùng instance khác. Bản upload mới nằm ở `src/AnphaHealth.Web/App_Data/uploads` khi chạy từ source. `Media__UploadDirectory` cấu hình nơi lưu ảnh để duy trì qua các lần triển khai.
 
-- `src/AnphaHealth.Web`: Blazor Web App .NET 10, Interactive Server.
-- `data/anpha-content.json`: 177 trang đã trích nội dung, HTML được làm sạch.
-- `data/asset-manifest.json`: 127 tệp media cục bộ, URL nguồn và dung lượng.
-- `RECON/raw`: HTML gốc của Anpha, HTML tham chiếu Chemlabs và toàn bộ dữ liệu REST pages/posts/media.
-- `RECON/routes`: kiểm kê URL của hai website, HTTP status và lỗi nguồn.
-- `RECON/screenshots`: ảnh đối chiếu nguồn và demo ở desktop/tablet/mobile.
-- `docs/PHAM_VI_BAO_GIA.md`: phạm vi gửi khách và các hạng mục cần chốt giá.
-- `CLONE_REPORT.md`: kết quả triển khai và kiểm tra thực tế.
+## Database First và tầng dịch vụ
 
-## Crawl lại
+- `database/schema.sql` định nghĩa schema. `Initialize-AnphaHealth.ps1` nhập dữ liệu theo khóa nguồn và giữ các chỉnh sửa đã lưu.
+- `src/AnphaHealth.Web/Data` chứa `AnphaHealthDbContext` và các entity do EF Core scaffold từ SQL Server. Thay đổi schema trước rồi sinh lại model theo hướng dẫn trong [tài liệu SQL](database/README.md).
+- `Data/Repository` có `IRepository<TEntity>` và triển khai EF. Mỗi thao tác dùng context riêng qua `IDbContextFactory`. Việc lưu sản phẩm, nội dung liên kết và quan hệ media diễn ra trong một lần lưu EF.
+- `Services/Contracts` gồm interface nghiệp vụ và interface generic `IEditorService<TListItem,TInput>`. CMS dùng DTO ở `Services/Models`. Các Razor component gọi interface qua DI.
+- `Components/Admin` chứa layout responsive, bảng điều khiển, trang/bài viết, danh mục/sản phẩm, thư viện ảnh, cài đặt và hộp thư tư vấn.
+- `data` chứa JSON dùng để import. Website truy vấn dữ liệu đã xuất bản từ SQL Server.
 
-```powershell
-python -m pip install -r requirements.txt
-python -X utf8 scripts/crawl.py
-```
+## CMS và tài nguyên frontend
 
-Crawl các endpoint REST công khai, theo hết liên kết nội bộ tìm được, tôn trọng robots.txt, lưu HTML và tải media gốc. 124 bản ghi media có metadata của các ảnh thumbnail; lưu 127 tệp ảnh gốc/thực dùng, không tải lặp toàn bộ thumbnail sinh tự động. Không thu thập nội dung riêng tư, không gửi form và không sao chép tracker vào app.
+Quản trị viên có thể tạo, sửa, lưu nháp và xuất bản. Nội dung mới đi vào trang đọc nội dung hoặc tin tức theo loại. Các trang thiết kế riêng trên website giữ bố cục của giao diện Blazor. Phần giới thiệu, hoạt động và tuyển dụng đọc nội dung CMS. Trang chủ, danh mục, tin tức và liên hệ lấy dữ liệu hiển thị từ các bảng tương ứng.
 
-## Kiểm tra trình duyệt
+Form liên hệ lưu yêu cầu vào hộp thư CMS. Trạng thái gồm chưa đọc, đã đọc và đã xử lý. Gửi email tự động chưa được cấu hình.
 
-Khởi động demo trước, sau đó:
+Phiên quản trị có thời hạn 8 giờ. Ảnh upload hỗ trợ JPEG, PNG, GIF và WebP tối đa 8 MB. Editor hỗ trợ tiêu đề, định dạng, danh sách, liên kết, ảnh và bảng. Gói Tiptap được lưu sẵn. Khi chỉnh mã editor, chạy:
 
 ```powershell
 npm ci
-npx playwright install chromium
+npm run build:cms
+```
+
+```powershell
+dotnet build src/AnphaHealth.Web
 npm run qa
 ```
 
-Script dùng Chromium đã có trong cache Windows nếu tìm thấy, hoặc Chromium của Playwright trên nền tảng khác. Lưu kết quả trong `RECON/clone-qa.json`. `scripts/recon.mjs` dùng cho khảo sát hai website nguồn.
-
-## Giới hạn bản demo
-
-Form chỉ xem trước, không gửi email và không lưu thông tin. Chưa có CMS, đăng nhập, cơ sở dữ liệu, upload, thanh toán hay hệ thống nghiệp vụ. Các mục đang cập nhật ở website gốc giữ đúng trạng thái. Thông tin cũ, giá, thông số và địa chỉ phải được khách duyệt trước khi đưa lên production.
-
-Chemlabs là template thương mại của 7oroof. Nếu dùng mã/asset của template khi triển khai chính thức cần license phù hợp. Demo hiện dùng component/CSS tự viết; ảnh Anpha được giữ để trình khách và cần được chủ sở hữu xác nhận quyền sử dụng khi xuất bản. Không có thao tác triển khai public trong dự án này.
+Chạy kiểm thử trình duyệt khi website đang mở trên cổng 5080. `scripts/recon.mjs` và `scripts/crawl.py` dùng cho khảo sát và làm mới dữ liệu nguồn. [Phạm vi báo giá ban đầu](docs/PHAM_VI_BAO_GIA.md) ghi nhận giai đoạn trình giao diện trước khi CMS được bổ sung.

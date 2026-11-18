@@ -1,0 +1,35 @@
+@inject IPublicWebsiteService Website
+
+<div class="content-tabs" aria-label="@AccessibleName">
+    @foreach (var page in pages)
+    {
+        <button type="button" aria-pressed="@(page == selected ? "true" : "false")"
+            class="@(page == selected ? "active" : "")" @onclick="() => selected = page">@(page.Title)</button>
+    }
+</div>
+@if (selected is { } current)
+{
+    <article class="prose source-content">@((MarkupString)current.Html)</article>
+}
+else
+{
+    <p>Đang cập nhật.</p>
+}
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<string> Slugs { get; set; } = [];
+    [Parameter] public string AccessibleName { get; set; } = "";
+
+    private readonly List<PublicPage> pages = [];
+    private PublicPage? selected;
+
+    protected override async Task OnInitializedAsync()
+    {
+        foreach (var slug in Slugs)
+        {
+            if (await Website.GetPageAsync(slug, "Page") is { } page)
+                pages.Add(page);
+        }
+        selected = pages.FirstOrDefault();
+    }
+}

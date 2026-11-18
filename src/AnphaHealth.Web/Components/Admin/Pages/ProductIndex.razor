@@ -1,0 +1,126 @@
+@page "/admin/san-pham"
+@inject IProductService Products
+
+<PageTitle>Sản phẩm | Anpha Health</PageTitle>
+
+<AdminPageHeader Title="Sản phẩm" Description="Quản lý các nhóm ngành hàng và thông tin thiết bị hiển thị trên website.">
+    <Actions>
+        <a class="admin-button admin-button-secondary" href="/admin/san-pham/danh-muc"><AdminIcon Name="settings" /> Danh mục</a>
+        <a class="admin-button admin-button-primary" href="/admin/san-pham/tao-moi"><AdminIcon Name="plus" /> Thêm sản phẩm</a>
+    </Actions>
+</AdminPageHeader>
+
+<section class="admin-card" aria-label="Danh sách sản phẩm">
+    <form class="admin-filters" @onsubmit="SearchAsync" @onsubmit:preventDefault>
+        <label class="admin-search">
+            <span class="admin-sr-only">Tìm sản phẩm</span>
+            <AdminIcon Name="search" />
+            <input type="search" @bind="search" placeholder="Tìm sản phẩm hoặc thương hiệu…" />
+        </label>
+        <label>
+            <span class="admin-sr-only">Lọc danh mục</span>
+            <select @bind="category" @bind:after="SearchAsync">
+                <option value="0">Tất cả danh mục</option>
+                @foreach (var item in categories)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
+        </label>
+        <button class="admin-button admin-button-secondary" type="submit">Tìm kiếm</button>
+    </form>
+
+    <AdminAlert Message="@error" IsError="true" />
+    @if (loading)
+    {
+        <p class="admin-loading" role="status">Đang tải sản phẩm…</p>
+    }
+    else if (result is { Items.Count: > 0 } data)
+    {
+        <div class="admin-table-scroll">
+            <table class="admin-table">
+                <thead><tr><th>Tên sản phẩm</th><th>Thương hiệu</th><th>Danh mục</th><th>Trạng thái</th><th><span class="admin-sr-only">Hành động</span></th></tr></thead>
+                <tbody>
+                    @foreach (var item in data.Items)
+                    {
+                        <tr>
+                            <td>
+                                <div class="admin-product-cell">
+                                    <span class="admin-product-thumbnail">
+                                        @if (item.FeaturedImage is { Length: > 0 } image)
+                                        {
+                                            <img src="@image" alt="" loading="lazy" />
+                                        }
+                                        else
+                                        {
+                                            <AdminIcon Name="package" />
+                                        }
+                                    </span>
+                                    <div><a class="admin-table-title" href="/admin/san-pham/@item.Id">@item.Name</a><small class="admin-table-subtitle">/@item.Slug</small></div>
+                                </div>
+                            </td>
+                            <td>@item.Brand</td>
+                            <td><span class="admin-type">@item.Category</span></td>
+                            <td><AdminStatus Published="@item.IsPublished" /></td>
+                            <td class="admin-table-action"><a class="admin-icon-button" href="/admin/san-pham/@item.Id" aria-label="Sửa @item.Name"><AdminIcon Name="edit" /></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <AdminPagination Total="@data.TotalCount" Page="@data.Page" PageSize="@data.PageSize" PageChanged="LoadAsync" />
+    }
+    else if (error is null)
+    {
+        <p class="admin-empty">Không tìm thấy sản phẩm phù hợp.</p>
+    }
+</section>
+
+@code {
+    private string search = "";
+    private int category;
+    private IReadOnlyList<CategoryItem> categories = [];
+    private string? error;
+    private bool loading = true;
+    private PagedResult<ProductListItem>? result;
+    private int loadVersion;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            categories = await Products.GetCategoriesAsync();
+            await LoadAsync(1);
+        }
+        catch (CmsException exception)
+        {
+            error = exception.Message;
+            loading = false;
+        }
+    }
+
+    private Task SearchAsync() => LoadAsync(1);
+
+    private async Task LoadAsync(int page)
+    {
+        var request = ++loadVersion;
+        loading = true;
+        error = null;
+        try
+        {
+            var data = await Products.ListAsync(new CmsQuery(Search: search, Page: page, CategoryId: category > 0 ? category : null));
+            if (request == loadVersion)
+                result = data;
+        }
+        catch (CmsException exception)
+        {
+            if (request == loadVersion)
+                error = exception.Message;
+        }
+        finally
+        {
+            if (request == loadVersion)
+                loading = false;
+        }
+    }
+}

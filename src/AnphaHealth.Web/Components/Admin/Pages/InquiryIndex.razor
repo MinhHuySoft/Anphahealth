@@ -1,0 +1,164 @@
+@page "/admin/yeu-cau"
+@inject IInquiryService Inquiries
+
+<PageTitle>Yêu cầu tư vấn | Anpha Health</PageTitle>
+
+<AdminPageHeader Title="Yêu cầu tư vấn" Description="Xem và cập nhật trạng thái các yêu cầu gửi từ trang liên hệ." />
+<AdminAlert Message="@error" IsError="true" />
+<AdminAlert Message="@notice" />
+
+<section class="admin-card" aria-label="Danh sách yêu cầu">
+    <form class="admin-filters" @onsubmit="SearchAsync" @onsubmit:preventDefault>
+        <label class="admin-search">
+            <span class="admin-sr-only">Tìm yêu cầu tư vấn</span>
+            <AdminIcon Name="search" />
+            <input type="search" @bind="search" placeholder="Tên, email hoặc nội dung…" />
+        </label>
+        <label>
+            <span class="admin-sr-only">Trạng thái yêu cầu</span>
+            <select @bind="status" @bind:after="SearchAsync">
+                <option value="">Tất cả trạng thái</option>
+                <option value="Unread">Chưa đọc</option>
+                <option value="Read">Đã đọc</option>
+                <option value="Resolved">Đã xử lý</option>
+            </select>
+        </label>
+        <button class="admin-button admin-button-secondary" type="submit">Tìm kiếm</button>
+    </form>
+    @if (loading)
+    {
+        <p class="admin-loading" role="status">Đang tải yêu cầu…</p>
+    }
+    else if (result is { Items.Count: > 0 } data)
+    {
+        <div class="admin-table-scroll">
+            <table class="admin-table">
+                <thead><tr><th>Người gửi</th><th>Lĩnh vực</th><th>Trạng thái</th><th>Ngày gửi</th><th><span class="admin-sr-only">Hành động</span></th></tr></thead>
+                <tbody>
+                    @foreach (var item in data.Items)
+                    {
+                        <tr>
+                            <td><button type="button" class="admin-table-title admin-text-button" @onclick="() => Open(item)">@item.Name</button><small class="admin-table-subtitle">@item.Email</small></td>
+                            <td>@item.Interest</td>
+                            <td><span class="admin-type admin-inquiry-@item.Status.ToLowerInvariant()">@AdminLabels.InquiryStatus(item.Status)</span></td>
+                            <td class="admin-nowrap">@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="admin-table-action"><button type="button" class="admin-icon-button" aria-label="Xem yêu cầu của @item.Name" @onclick="() => Open(item)"><AdminIcon Name="arrow" /></button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <AdminPagination Total="@data.TotalCount" Page="@data.Page" PageSize="@data.PageSize" PageChanged="LoadAsync" />
+    }
+    else if (error is null)
+    {
+        <p class="admin-empty">Chưa có yêu cầu tư vấn phù hợp.</p>
+    }
+</section>
+
+@if (opened is { } selected)
+{
+    <div class="admin-dialog-backdrop">
+        <section class="admin-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-inquiry-title" @onkeydown="HandleDialogKeys">
+            <div class="admin-card-title-row"><h2 id="admin-inquiry-title">Yêu cầu của @selected.Name</h2><button class="admin-icon-button" type="button" aria-label="Đóng yêu cầu" @onclick="Close"><AdminIcon Name="close" /></button></div>
+            <dl class="admin-inquiry-details">
+                <div><dt>Email</dt><dd><a href="mailto:@selected.Email">@selected.Email</a></dd></div>
+                <div><dt>Điện thoại</dt><dd>@(string.IsNullOrWhiteSpace(selected.Phone) ? "—" : selected.Phone)</dd></div>
+                <div><dt>Lĩnh vực</dt><dd>@selected.Interest</dd></div>
+                <div><dt>Gửi lúc</dt><dd>@selected.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd></div>
+            </dl>
+            <p class="admin-inquiry-message">@selected.Message</p>
+            <AdminAlert Message="@dialogError" IsError="true" />
+            <label class="admin-field">
+                <span>Trạng thái</span>
+                <select @bind="nextStatus">
+                    <option value="Unread">Chưa đọc</option>
+                    <option value="Read">Đã đọc</option>
+                    <option value="Resolved">Đã xử lý</option>
+                </select>
+            </label>
+            <div class="admin-dialog-actions">
+                <button class="admin-button admin-button-secondary" type="button" @onclick="Close">Đóng</button>
+                <button class="admin-button admin-button-primary" type="button" disabled="@(saving || nextStatus == selected.Status)" @onclick="SaveAsync">@(saving ? "Đang lưu…" : "Lưu trạng thái")</button>
+            </div>
+        </section>
+    </div>
+}
+
+@code {
+    private PagedResult<InquiryItem>? result;
+    private InquiryItem? opened;
+    private string search = "";
+    private string status = "";
+    private string nextStatus = "";
+    private string? error;
+    private string? notice;
+    private string? dialogError;
+    private bool loading = true;
+    private bool saving;
+    private int loadVersion;
+
+    protected override Task OnInitializedAsync() => LoadAsync(1);
+    private Task SearchAsync() => LoadAsync(1);
+
+    private async Task LoadAsync(int page)
+    {
+        var request = ++loadVersion;
+        loading = true;
+        error = null;
+        try
+        {
+            var data = await Inquiries.ListAsync(new CmsQuery(Search: search, Kind: status, Page: page));
+            if (request == loadVersion)
+                result = data;
+        }
+        catch (CmsException exception)
+        {
+            if (request == loadVersion)
+                error = exception.Message;
+        }
+        finally
+        {
+            if (request == loadVersion)
+                loading = false;
+        }
+    }
+
+    private void Open(InquiryItem item)
+    {
+        opened = item;
+        nextStatus = item.Status;
+        dialogError = null;
+    }
+
+    private void Close() => opened = null;
+
+    private void HandleDialogKeys(KeyboardEventArgs args)
+    {
+        if (args.Key == "Escape")
+            Close();
+    }
+
+    private async Task SaveAsync()
+    {
+        if (opened is not { } item || saving)
+            return;
+        saving = true;
+        dialogError = null;
+        try
+        {
+            await Inquiries.SetStatusAsync(item.Id, nextStatus);
+            Close();
+            notice = "Đã cập nhật trạng thái yêu cầu.";
+            await LoadAsync(1);
+        }
+        catch (CmsException exception)
+        {
+            dialogError = exception.Message;
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+}
